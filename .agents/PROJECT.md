@@ -75,6 +75,9 @@
 | 2026-02-24 | Artisan | Next.jsサイト構築 | 全ページ・コンポーネント | 完了（10ページ・8コンポーネント） |
 | 2026-02-24 | Scribe | ドキュメント3点作成 | テンプレート・デモ台本・計測設計 | 完了 |
 | 2026-02-24 | Radar | 品質検証 | ビルド・コード・コンテンツ・Static Export | 完了（3件修正: next.config, STEP0手順, 文字化け） |
+| 2026-02-24 | Nexus | Vercelデプロイ | 本番環境 | 完了（https://cc-orchestration-workshop.vercel.app） |
+| 2026-02-24 | Nexus | リポジトリ公開化 | fork用フォールバック | 完了（Public化 + README追記） |
+| 2026-02-24 | Nexus | Notion同期 | リソースリンク追加 | 完了（公開URL・GitHubリンク・フォールバック案内） |
 
 ---
 
