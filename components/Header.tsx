@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 
 const steps = [
   { id: 0, title: "環境確認" },
-  { id: 1, title: "思想理解" },
+  { id: 1, title: "しくみ理解" },
   { id: 2, title: "講師デモ" },
-  { id: 3, title: "サービス設計" },
-  { id: 4, title: "コード生成" },
-  { id: 5, title: "GitHub連携" },
+  { id: 3, title: "自動ビルド" },
+  { id: 4, title: "カスタマイズ" },
+  { id: 5, title: "GitHub push" },
   { id: 6, title: "Vercel公開" },
   { id: 7, title: "振り返り" },
 ];
@@ -24,7 +24,7 @@ export function Header() {
           href="/"
           className="text-base font-bold text-slate-900 hover:text-primary transition-colors sm:text-lg"
         >
-          Claude Code × オーケストレーション講座
+          Claude Code x オーケストレーション講座
         </Link>
       </div>
       <div className="border-t border-slate-100">

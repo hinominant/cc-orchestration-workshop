@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 
 const steps = [
   { id: 0, title: "環境確認", duration: "10分" },
-  { id: 1, title: "思想理解", duration: "10分" },
+  { id: 1, title: "しくみ理解", duration: "10分" },
   { id: 2, title: "講師デモ", duration: "15分" },
-  { id: 3, title: "サービス設計", duration: "40分" },
-  { id: 4, title: "コード生成", duration: "20分" },
-  { id: 5, title: "GitHub連携", duration: "10分" },
+  { id: 3, title: "自動ビルド", duration: "40分" },
+  { id: 4, title: "カスタマイズ", duration: "20分" },
+  { id: 5, title: "GitHub push", duration: "10分" },
   { id: 6, title: "Vercel公開", duration: "10分" },
   { id: 7, title: "振り返り", duration: "10分" },
 ];

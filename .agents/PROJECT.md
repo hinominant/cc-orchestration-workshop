@@ -78,6 +78,10 @@
 | 2026-02-24 | Nexus | Vercelデプロイ | 本番環境 | 完了（https://cc-orchestration-workshop.vercel.app） |
 | 2026-02-24 | Nexus | リポジトリ公開化 | fork用フォールバック | 完了（Public化 + README追記） |
 | 2026-02-24 | Nexus | Notion同期 | リソースリンク追加 | 完了（公開URL・GitHubリンク・フォールバック案内） |
+| 2026-02-24 | ARIS | 方向転換評価 | Agent Orchestrator導入コンセプト | PASS（Founder PASS / Vision・Execution・Audit WARN→補強設計追加） |
+| 2026-02-24 | Artisan | スターターリポジトリ作成 | hinominant/cc-workshop-starter | 完了（CLAUDE.md + 3エージェント + Next.js基盤） |
+| 2026-02-24 | Artisan | サイト全面リビルド | 全10ページ・2コンポーネント | 完了（Agent Orchestratorコンセプトに変更） |
+| 2026-02-24 | Scribe | ドキュメント全面リビルド | デモ台本・計測設計・テンプレート | 完了（旧3役→新エージェントチーム） |
 
 ---
 

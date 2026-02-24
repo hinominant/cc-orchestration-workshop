@@ -3,42 +3,42 @@ import Link from "next/link";
 const timeline = [
   {
     step: 0,
-    title: "環境確認",
+    title: "環境確認 + スターターFork",
     duration: "10分",
-    description: "必要なツールが揃っているか確認",
+    description: "ツール確認とスターターリポジトリのFork",
     color: "bg-slate-500",
   },
   {
     step: 1,
-    title: "思想理解",
+    title: "AIチームのしくみ",
     duration: "10分",
-    description: "AIをチームとして活用する考え方",
+    description: "CLAUDE.mdとエージェント定義を理解する",
     color: "bg-blue-500",
   },
   {
     step: 2,
     title: "講師デモ",
     duration: "15分",
-    description: "実際のサービス構築を見る",
+    description: "エージェントチームが動く様子を見る",
     color: "bg-indigo-500",
   },
   {
     step: 3,
-    title: "サービス設計",
+    title: "あなたのサービスを作ろう",
     duration: "40分",
-    description: "整理・批判・実行の3分業で設計",
+    description: "アイデアを一言伝えてエージェントが自動ビルド",
     color: "bg-purple-500",
   },
   {
     step: 4,
-    title: "コード生成",
+    title: "カスタマイズ",
     duration: "20分",
-    description: "Claude Codeでコードを生成",
+    description: "修正依頼とCLAUDE.md編集で出力を変える",
     color: "bg-violet-500",
   },
   {
     step: 5,
-    title: "GitHub連携",
+    title: "GitHub push",
     duration: "10分",
     description: "コードをGitHubにアップロード",
     color: "bg-cyan-500",
@@ -52,7 +52,7 @@ const timeline = [
   },
   {
     step: 7,
-    title: "振り返り",
+    title: "振り返り + ロードマップ",
     duration: "10分",
     description: "学びの整理と次のステップ",
     color: "bg-green-500",
@@ -66,14 +66,14 @@ export default function HomePage() {
       <section className="bg-gradient-to-b from-blue-50 to-white px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            Claude Code ×{" "}
+            Claude Code x{" "}
             <span className="text-primary">オーケストレーション</span>講座
           </h1>
           <p className="mt-4 text-lg text-slate-600 sm:text-xl">
-            AIを&quot;使う&quot;から、AIに&quot;任せる&quot;へ。
+            AIを&quot;道具&quot;として使うから、AIを&quot;チーム&quot;として動かすへ。
           </p>
           <p className="mt-2 text-sm text-slate-500">
-            非エンジニアが2時間でサービスを設計・構築・公開するチュートリアル
+            アイデアを一言伝えるだけで、AIチームが設計・実装・検証を自動で行う体験
           </p>
           <Link
             href="/step/0"
@@ -95,6 +95,35 @@ export default function HomePage() {
               />
             </svg>
           </Link>
+        </div>
+      </section>
+
+      {/* Concept */}
+      <section className="px-4 py-12 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-slate-200 p-5 text-center">
+              <div className="mb-2 text-3xl font-bold text-blue-500" aria-hidden="true">1</div>
+              <h3 className="font-semibold text-slate-900">指示書を定義</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                CLAUDE.mdでプロジェクトの方向性を定義する
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 p-5 text-center">
+              <div className="mb-2 text-3xl font-bold text-purple-500" aria-hidden="true">2</div>
+              <h3 className="font-semibold text-slate-900">チームに任せる</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                専門エージェントが自動で設計・実装・検証
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 p-5 text-center">
+              <div className="mb-2 text-3xl font-bold text-green-500" aria-hidden="true">3</div>
+              <h3 className="font-semibold text-slate-900">結果を調整</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                確認して修正を依頼し、指示書を改善する
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

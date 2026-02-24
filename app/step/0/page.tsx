@@ -27,10 +27,10 @@ const checks = [
     expected: "バージョン番号が表示される",
   },
   {
-    id: "vercel",
-    label: "Vercel CLI がインストールされている",
-    command: "vercel --version",
-    expected: "バージョン番号が表示される",
+    id: "github",
+    label: "GitHub アカウントを持っている",
+    command: "gh auth status",
+    expected: "Logged in と表示される（またはブラウザでgithub.comにログインできる）",
   },
 ];
 
@@ -47,18 +47,21 @@ export default function Step0Page() {
     <div className="px-4 py-8 sm:px-6 sm:py-12">
       <StepLayout
         stepNumber={0}
-        title="環境確認"
+        title="環境確認 + スターターFork"
         duration="10分"
         nextStep={1}
       >
         <p className="text-slate-600 leading-relaxed">
-          まず、講座で使用するツールがすべてインストールされているか確認しましょう。
-          ターミナル（コマンドプロンプト）を開いて、以下のコマンドを1つずつ実行してください。
+          まず、講座で使用するツールが揃っているか確認し、
+          スターターリポジトリをForkしてローカルに準備します。
         </p>
 
         <Callout type="info">
           ターミナルの開き方：Macの場合は「ターミナル」アプリ、Windowsの場合は「PowerShell」を使います。
         </Callout>
+
+        {/* 環境チェック */}
+        <h2 className="text-xl font-bold text-slate-900">環境チェック</h2>
 
         <div className="space-y-6">
           {checks.map((check) => (
@@ -140,13 +143,6 @@ export default function Step0Page() {
               Node.jsのインストール後に実行してください。
             </p>
           </div>
-
-          <div className="rounded-lg border border-slate-200 p-4">
-            <h3 className="mb-2 font-semibold text-slate-900">
-              Vercel CLI
-            </h3>
-            <CodeBlock code="npm install -g vercel" language="powershell" />
-          </div>
         </div>
 
         <Callout type="info">
@@ -155,7 +151,75 @@ export default function Step0Page() {
             brew install git node
           </code>
           ）でインストールできます。
-          Claude CodeとVercel CLIはMac/共通で上記のnpmコマンドを使います。
+          Claude CodeはMac/共通で上記のnpmコマンドを使います。
+        </Callout>
+
+        {/* スターターリポジトリのFork */}
+        <h2 className="text-xl font-bold text-slate-900">
+          スターターリポジトリのFork
+        </h2>
+        <p className="text-slate-600 leading-relaxed">
+          この講座では、エージェントチームが事前設定されたスターターリポジトリを使います。
+          以下の手順でForkしてローカルに準備してください。
+        </p>
+
+        <div className="space-y-6">
+          <div>
+            <h3 className="mb-2 font-semibold text-slate-900">
+              1. スターターリポジトリにアクセス
+            </h3>
+            <p className="mb-2 text-sm text-slate-600">
+              ブラウザで以下のURLを開きます。
+            </p>
+            <CodeBlock code="https://github.com/hinominant/cc-workshop-starter" language="text" />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-semibold text-slate-900">
+              2. 「Fork」ボタンをクリック
+            </h3>
+            <p className="text-sm text-slate-600">
+              ページ右上の「Fork」ボタンをクリックして、自分のアカウントにコピーします。
+              設定はデフォルトのまま「Create fork」をクリックしてください。
+            </p>
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-semibold text-slate-900">
+              3. ローカルにClone
+            </h3>
+            <p className="mb-2 text-sm text-slate-600">
+              「YOUR_NAME」を自分のGitHubユーザー名に置き換えてください。
+            </p>
+            <CodeBlock code="git clone https://github.com/YOUR_NAME/cc-workshop-starter.git" language="bash" />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-semibold text-slate-900">
+              4. 依存パッケージをインストール
+            </h3>
+            <CodeBlock
+              code={`cd cc-workshop-starter
+npm install`}
+              language="bash"
+            />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-semibold text-slate-900">
+              5. Claude Codeでプロジェクトを開く
+            </h3>
+            <CodeBlock code="claude" language="bash" />
+            <p className="mt-2 text-sm text-slate-600">
+              Claude Code が起動すれば準備完了です。
+              次のSTEPでは、このプロジェクトに入っている「AIチームの設定」を見ていきます。
+            </p>
+          </div>
+        </div>
+
+        <Callout type="tip">
+          Forkしたリポジトリには、CLAUDE.md や .claude/agents/ といったファイルが入っています。
+          これらがAIチームの「設計図」です。次のSTEPで詳しく見ていきます。
         </Callout>
 
         <div className="mt-8 rounded-xl border-2 border-dashed border-slate-200 p-6 text-center">
@@ -165,7 +229,7 @@ export default function Step0Page() {
                 すべての環境確認が完了しました
               </p>
               <p className="mt-1 text-sm text-slate-500">
-                準備完了です。次のステップに進みましょう。
+                スターターリポジトリもForkできたら、次のステップに進みましょう。
               </p>
               <Link
                 href="/step/1"

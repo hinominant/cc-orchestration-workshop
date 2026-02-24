@@ -7,7 +7,7 @@ export default function Step5Page() {
     <div className="px-4 py-8 sm:px-6 sm:py-12">
       <StepLayout
         stepNumber={5}
-        title="GitHub連携"
+        title="GitHub push"
         duration="10分"
         prevStep={4}
         nextStep={6}
@@ -17,13 +17,14 @@ export default function Step5Page() {
             コードをGitHubにアップロードしよう
           </p>
           <p className="mt-2 text-center text-sm text-slate-600">
-            作ったコードをインターネット上に保存します
+            Forkしたリポジトリにpushするだけなのでリモート設定は不要です
           </p>
         </div>
 
         <p className="text-slate-600 leading-relaxed">
           GitHub は「コードの保管庫」です。
-          ここにコードをアップロードすると、次のSTEPでVercelが自動的に読み込んで公開してくれます。
+          スターターリポジトリをForkしているので、remote設定は済んでいます。
+          変更内容をpushするだけで完了です。
         </p>
 
         <h2 className="text-xl font-bold text-slate-900">手順</h2>
@@ -31,12 +32,12 @@ export default function Step5Page() {
         <div className="space-y-6">
           <div>
             <h3 className="mb-2 font-semibold text-slate-900">
-              1. Gitを初期化
+              1. 変更されたファイルを確認
             </h3>
             <p className="mb-2 text-sm text-slate-600">
-              プロジェクトフォルダ内で以下を実行します。
+              まず、どのファイルが変更されたか確認しましょう。
             </p>
-            <CodeBlock code="git init" language="bash" />
+            <CodeBlock code="git status" language="bash" />
           </div>
 
           <div>
@@ -48,73 +49,19 @@ export default function Step5Page() {
 
           <div>
             <h3 className="mb-2 font-semibold text-slate-900">
-              3. 最初のコミット（保存ポイント）を作成
+              3. コミット（保存ポイント）を作成
             </h3>
             <CodeBlock code={'git commit -m "initial"'} language="bash" />
           </div>
 
           <div>
             <h3 className="mb-2 font-semibold text-slate-900">
-              4. GitHubで新しいリポジトリを作成
-            </h3>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <ol className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <span className="shrink-0 font-bold text-slate-500">a.</span>
-                  <span>
-                    ブラウザで{" "}
-                    <code className="rounded bg-white px-1.5 py-0.5 text-xs font-mono">
-                      github.com
-                    </code>{" "}
-                    を開いてログイン
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="shrink-0 font-bold text-slate-500">b.</span>
-                  <span>
-                    右上の「+」ボタン →「New repository」をクリック
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="shrink-0 font-bold text-slate-500">c.</span>
-                  <span>
-                    Repository name に好きな名前を入力（例: my-service）
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="shrink-0 font-bold text-slate-500">d.</span>
-                  <span>
-                    「Public」を選択（Vercelで公開するため）
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="shrink-0 font-bold text-slate-500">e.</span>
-                  <span>
-                    他はデフォルトのまま「Create repository」をクリック
-                  </span>
-                </li>
-              </ol>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="mb-2 font-semibold text-slate-900">
-              5. リモートリポジトリを追加
+              4. GitHubにpush
             </h3>
             <p className="mb-2 text-sm text-slate-600">
-              YOUR_NAME と YOUR_REPO を自分のGitHubユーザー名とリポジトリ名に置き換えてください。
+              Forkしたリポジトリに変更を送信します。
             </p>
-            <CodeBlock
-              code="git remote add origin https://github.com/YOUR_NAME/YOUR_REPO.git"
-              language="bash"
-            />
-          </div>
-
-          <div>
-            <h3 className="mb-2 font-semibold text-slate-900">
-              6. コードをプッシュ（アップロード）
-            </h3>
-            <CodeBlock code="git push -u origin main" language="bash" />
+            <CodeBlock code="git push origin main" language="bash" />
           </div>
         </div>
 
@@ -128,7 +75,7 @@ export default function Step5Page() {
           ブランチ名が「master」かもしれません。
           その場合は{" "}
           <code className="rounded bg-amber-100 px-1 py-0.5 text-xs font-mono">
-            git push -u origin master
+            git push origin master
           </code>{" "}
           を試してください。
         </Callout>
@@ -138,7 +85,7 @@ export default function Step5Page() {
             GitHubにコードがアップロードされましたか？
           </p>
           <p className="mt-1 text-sm text-slate-500">
-            GitHubのリポジトリページでファイルが見えたらOKです
+            GitHubのリポジトリページでファイルが更新されていればOKです
           </p>
         </div>
       </StepLayout>

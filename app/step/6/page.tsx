@@ -50,7 +50,7 @@ export default function Step6Page() {
                 「New Project」をクリック
               </h3>
               <p className="mt-1 text-sm text-slate-600">
-                ダッシュボード画面の右上にある「Add New...」→「Project」をクリックします。
+                ダッシュボード画面の右上にある「Add New...」から「Project」をクリックします。
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function Step6Page() {
                 GitHubリポジトリを選択
               </h3>
               <p className="mt-1 text-sm text-slate-600">
-                先ほどアップロードしたリポジトリが一覧に表示されるので、
+                Forkした「cc-workshop-starter」リポジトリが一覧に表示されるので、
                 「Import」ボタンをクリックします。
               </p>
             </div>
@@ -93,11 +93,11 @@ export default function Step6Page() {
 
         {/* 成功表示 */}
         <div className="rounded-xl border-2 border-green-300 bg-green-50 p-8 text-center">
-          <div className="mb-3 text-4xl" aria-hidden="true">
+          <div className="mb-3 text-4xl font-bold text-green-600" aria-hidden="true">
             *
           </div>
           <p className="text-xl font-bold text-green-800">
-            公開URLが表示されたら完成です！
+            公開URLが表示されたら完成です
           </p>
           <p className="mt-2 text-sm text-green-600">
             デプロイが完了すると、
@@ -114,7 +114,7 @@ export default function Step6Page() {
         <Callout type="warning">
           デプロイに失敗する場合は、エラーログを確認してください。
           多くの場合、ビルドエラーが原因です。
-          Claude Code に「Vercelでビルドエラーが出ました」と相談すれば解決できます。
+          Claude Codeに「Vercelでビルドエラーが出ました」と相談すれば解決できます。
         </Callout>
       </StepLayout>
     </div>
