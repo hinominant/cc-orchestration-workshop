@@ -7,7 +7,7 @@ export default function IntermediateStep6Page() {
     <div className="px-4 py-8 sm:px-6 sm:py-12">
       <StepLayout
         stepNumber={6}
-        title="観測性"
+        title="仕上げ"
         duration="30分"
         prevStep={5}
         nextStep={7}
@@ -17,488 +17,213 @@ export default function IntermediateStep6Page() {
         accentColor="bg-intermediate"
       >
         <p className="text-slate-600 leading-relaxed">
-          サービスを運用するには「今、何が起きているか」を把握する必要があります。
-          観測性（Observability）は、ログ・メトリクス・アラートの3つで構成されます。
-          このSTEPでは、EOSに構造化ログとメトリクスを組み込み、異常を検知する仕組みを作ります。
+          テストと監査をパスしたら、セキュリティと運用の基本を確認して仕上げます。
+          「動くサービス」を「安心して人に見せられるサービス」にする最後の工程です。
         </p>
 
-        <Callout type="info">
-          「ログなんて console.log でいいのでは？」と思うかもしれません。
-          しかし、100件のイベントを処理している中で1件だけ失敗したとき、
-          console.log の山から該当行を見つけるのは非常に困難です。
-          構造化ログなら event_id で即座にフィルタできます。
-        </Callout>
-
-        {/* 構造化ログ */}
-        <h2 className="text-xl font-bold text-slate-900">1. 構造化ログ</h2>
+        {/* セキュリティ基本チェック */}
+        <h2 className="text-xl font-bold text-slate-900">1. セキュリティ基本チェック</h2>
         <p className="text-slate-600 leading-relaxed">
-          構造化ログとは、JSON形式で出力するログです。
-          キーと値のペアで情報を整理するため、ツールによる検索・集計が容易になります。
-        </p>
-
-        <div className="my-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
-            <h3 className="mb-2 font-semibold text-red-800">非構造化ログ</h3>
-            <pre className="overflow-x-auto text-xs text-red-700">
-{`[INFO] Processing payment event
-[ERROR] Failed to notify slack
-[INFO] Event completed in 234ms`}
-            </pre>
-            <p className="mt-2 text-xs text-red-600">
-              人間は読めるが、ツールで検索・集計しにくい
-            </p>
-          </div>
-          <div className="rounded-lg border-2 border-green-200 bg-green-50 p-4">
-            <h3 className="mb-2 font-semibold text-green-800">構造化ログ</h3>
-            <pre className="overflow-x-auto text-xs text-green-700">
-{`{"level":"info","event_id":"evt_001",
- "provider":"a","status":"processing"}
-{"level":"error","event_id":"evt_001",
- "component":"notifier","error":"timeout"}
-{"level":"info","event_id":"evt_001",
- "status":"completed","duration_ms":234}`}
-            </pre>
-            <p className="mt-2 text-xs text-green-600">
-              event_id でフィルタすれば1つのイベントの全ログを追える
-            </p>
-          </div>
-        </div>
-
-        <CodeBlock
-          code={`// src/observability/logger.ts
-
-export type LogLevel = "debug" | "info" | "warn" | "error";
-
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
-  message: string;
-  [key: string]: unknown;
-}
-
-const LOG_LEVELS: Record<LogLevel, number> = {
-  debug: 0,
-  info: 1,
-  warn: 2,
-  error: 3,
-};
-
-export class StructuredLogger {
-  private readonly minLevel: LogLevel;
-  private readonly context: Record<string, unknown>;
-
-  constructor(
-    minLevel: LogLevel = "info",
-    context: Record<string, unknown> = {}
-  ) {
-    this.minLevel = minLevel;
-    this.context = context;
-  }
-
-  /**
-   * コンテキストを追加した子ロガーを生成
-   * 例: logger.child({ event_id: "evt_001" })
-   */
-  child(additionalContext: Record<string, unknown>): StructuredLogger {
-    return new StructuredLogger(this.minLevel, {
-      ...this.context,
-      ...additionalContext,
-    });
-  }
-
-  debug(message: string, data?: Record<string, unknown>): void {
-    this.log("debug", message, data);
-  }
-
-  info(message: string, data?: Record<string, unknown>): void {
-    this.log("info", message, data);
-  }
-
-  warn(message: string, data?: Record<string, unknown>): void {
-    this.log("warn", message, data);
-  }
-
-  error(message: string, data?: Record<string, unknown>): void {
-    this.log("error", message, data);
-  }
-
-  private log(
-    level: LogLevel,
-    message: string,
-    data?: Record<string, unknown>
-  ): void {
-    if (LOG_LEVELS[level] < LOG_LEVELS[this.minLevel]) {
-      return;
-    }
-
-    const entry: LogEntry = {
-      timestamp: new Date().toISOString(),
-      level,
-      message,
-      ...this.context,
-      ...data,
-    };
-
-    const output = JSON.stringify(entry);
-
-    if (level === "error") {
-      console.error(output);
-    } else if (level === "warn") {
-      console.warn(output);
-    } else {
-      console.log(output);
-    }
-  }
-}
-
-/** アプリケーション全体で共有するロガーインスタンス */
-export const logger = new StructuredLogger(
-  (process.env.LOG_LEVEL as LogLevel) ?? "info",
-  { service: "eos" }
-);`}
-          language="typescript"
-          filename="src/observability/logger.ts"
-        />
-
-        <h3 className="text-lg font-semibold text-slate-900">ログの使い方</h3>
-        <p className="text-slate-600 leading-relaxed">
-          Orchestrator でのログ使用例です。
-          child() メソッドで event_id をコンテキストに追加すると、
-          そのイベントに関するすべてのログに event_id が自動付与されます。
-        </p>
-
-        <CodeBlock
-          code={`// Orchestrator での使用例
-
-import { logger } from "../observability/logger";
-
-async process(event: EOSEvent): Promise<ProcessingResult> {
-  // event_id 付きの子ロガーを生成
-  const log = logger.child({
-    event_id: event.event_id,
-    provider: event.provider,
-    type: event.type,
-  });
-
-  log.info("Processing started");
-
-  // 冪等性チェック
-  const isDuplicate = await this.deps.checkIdempotency(event.event_id);
-  if (isDuplicate) {
-    log.info("Duplicate event, skipping");
-    return { success: true, message: "Skipped", duration_ms: 0 };
-  }
-
-  // Worker 実行
-  try {
-    const result = await worker.execute(event);
-    log.info("Processing completed", {
-      success: result.success,
-      duration_ms: result.duration_ms,
-    });
-    return result;
-  } catch (error) {
-    log.error("Processing failed", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-  }
-}`}
-          language="typescript"
-          filename="ログ使用例"
-        />
-
-        {/* メトリクス */}
-        <h2 className="text-xl font-bold text-slate-900">2. メトリクス</h2>
-        <p className="text-slate-600 leading-relaxed">
-          メトリクスは、サービスの健全性を数値で表す指標です。
-          「成功率」「処理時間」「DLQ滞留数」などを計測し、異常を定量的に検知します。
-        </p>
-
-        <CodeBlock
-          code={`// src/observability/metrics.ts
-
-interface MetricSnapshot {
-  /** 処理成功件数 */
-  success_count: number;
-  /** 処理失敗件数 */
-  failure_count: number;
-  /** 重複スキップ件数 */
-  duplicate_count: number;
-  /** DLQ投入件数 */
-  dlq_count: number;
-  /** 処理時間の合計（ミリ秒） */
-  total_duration_ms: number;
-  /** 処理時間の最大値（ミリ秒） */
-  max_duration_ms: number;
-  /** メトリクス計測開始時刻 */
-  started_at: string;
-}
-
-export class MetricsCollector {
-  private successCount = 0;
-  private failureCount = 0;
-  private duplicateCount = 0;
-  private dlqCount = 0;
-  private totalDurationMs = 0;
-  private maxDurationMs = 0;
-  private readonly startedAt: string;
-
-  constructor() {
-    this.startedAt = new Date().toISOString();
-  }
-
-  /** 処理成功を記録 */
-  recordSuccess(durationMs: number): void {
-    this.successCount++;
-    this.recordDuration(durationMs);
-  }
-
-  /** 処理失敗を記録 */
-  recordFailure(durationMs: number): void {
-    this.failureCount++;
-    this.recordDuration(durationMs);
-  }
-
-  /** 重複スキップを記録 */
-  recordDuplicate(): void {
-    this.duplicateCount++;
-  }
-
-  /** DLQ投入を記録 */
-  recordDLQ(): void {
-    this.dlqCount++;
-  }
-
-  /** 現在のメトリクススナップショットを取得 */
-  snapshot(): MetricSnapshot {
-    return {
-      success_count: this.successCount,
-      failure_count: this.failureCount,
-      duplicate_count: this.duplicateCount,
-      dlq_count: this.dlqCount,
-      total_duration_ms: this.totalDurationMs,
-      max_duration_ms: this.maxDurationMs,
-      started_at: this.startedAt,
-    };
-  }
-
-  /** 処理件数合計 */
-  get totalProcessed(): number {
-    return this.successCount + this.failureCount;
-  }
-
-  /** 失敗率（0-1） */
-  get failureRate(): number {
-    if (this.totalProcessed === 0) return 0;
-    return this.failureCount / this.totalProcessed;
-  }
-
-  /** 平均処理時間（ミリ秒） */
-  get avgDurationMs(): number {
-    if (this.totalProcessed === 0) return 0;
-    return this.totalDurationMs / this.totalProcessed;
-  }
-
-  private recordDuration(durationMs: number): void {
-    this.totalDurationMs += durationMs;
-    if (durationMs > this.maxDurationMs) {
-      this.maxDurationMs = durationMs;
-    }
-  }
-}
-
-/** アプリケーション全体で共有するメトリクスインスタンス */
-export const metrics = new MetricsCollector();`}
-          language="typescript"
-          filename="src/observability/metrics.ts"
-        />
-
-        {/* アラートポリシー */}
-        <h2 className="text-xl font-bold text-slate-900">3. アラートポリシー</h2>
-        <p className="text-slate-600 leading-relaxed">
-          メトリクスを計測するだけでは不十分です。
-          閾値を超えたら自動的に通知する「アラートポリシー」を定義します。
+          セキュリティは難しく考える必要はありません。
+          まずは「秘密情報が漏れていないか」の3点だけ確認しましょう。
         </p>
 
         <div className="my-6 space-y-3">
-          {[
-            {
-              name: "高失敗率アラート",
-              condition: "失敗率が 5% を超えた場合",
-              action: "Slack に警告通知",
-              severity: "warning",
-              color: "border-amber-200 bg-amber-50",
-            },
-            {
-              name: "DLQ 滞留アラート",
-              condition: "DLQ の未処理件数が 10 を超えた場合",
-              action: "Slack にエラー通知",
-              severity: "error",
-              color: "border-red-200 bg-red-50",
-            },
-            {
-              name: "高レイテンシアラート",
-              condition: "平均処理時間が 5秒 を超えた場合",
-              action: "Slack に警告通知",
-              severity: "warning",
-              color: "border-amber-200 bg-amber-50",
-            },
-          ].map((alert) => (
-            <div key={alert.name} className={`rounded-lg border p-4 ${alert.color}`}>
-              <h3 className="font-semibold text-slate-900">{alert.name}</h3>
-              <div className="mt-2 grid gap-2 sm:grid-cols-2 text-sm">
-                <div>
-                  <span className="font-medium text-slate-600">条件: </span>
-                  <span className="text-slate-700">{alert.condition}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-slate-600">アクション: </span>
-                  <span className="text-slate-700">{alert.action}</span>
-                </div>
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">1</span>
+              <div>
+                <h3 className="font-semibold text-slate-900">.env ファイルが .gitignore に含まれているか</h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  .env にはAPIキーやパスワードが書かれています。
+                  これがGitHubにアップロードされると、誰でも見られる状態になります。
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">2</span>
+              <div>
+                <h3 className="font-semibold text-slate-900">コード内にAPIキーやパスワードが直書きされていないか</h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  秘密情報はすべて環境変数（.envファイル）経由で読み込むのが鉄則です。
+                  コードに直接書くと、GitHubに公開された瞬間に漏洩します。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">3</span>
+              <div>
+                <h3 className="font-semibold text-slate-900">Webhook署名検証が有効になっているか</h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  署名検証がないと、誰でもWebhookエンドポイントにデータを送れてしまいます。
+                  「本物のリクエストかどうか」を確認する仕組みです。
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <p className="text-sm font-medium text-slate-700">Claude Code への指示例:</p>
         <CodeBlock
-          code={`// src/observability/alerts.ts
-
-import type { NotifierAdapter } from "../adapters/types";
-import type { MetricsCollector } from "./metrics";
-import { logger } from "./logger";
-
-export interface AlertPolicy {
-  name: string;
-  description: string;
-  check: (metrics: MetricsCollector) => boolean;
-  severity: "warning" | "error";
-}
-
-const DEFAULT_POLICIES: AlertPolicy[] = [
-  {
-    name: "high-failure-rate",
-    description: "失敗率が5%を超えている",
-    check: (m) => m.totalProcessed >= 10 && m.failureRate > 0.05,
-    severity: "warning",
-  },
-  {
-    name: "high-latency",
-    description: "平均処理時間が5秒を超えている",
-    check: (m) => m.totalProcessed >= 5 && m.avgDurationMs > 5000,
-    severity: "warning",
-  },
-];
-
-/**
- * メトリクスをチェックしてアラートを発火
- * 定期的に呼び出す（例: 1分ごと）
- */
-export async function checkAlerts(
-  metrics: MetricsCollector,
-  notifier: NotifierAdapter,
-  dlqPendingCount: number,
-  policies: AlertPolicy[] = DEFAULT_POLICIES
-): Promise<void> {
-  // DLQ滞留チェック（動的に追加）
-  const allPolicies = [
-    ...policies,
-    {
-      name: "dlq-backlog",
-      description: \`DLQ未処理件数が10を超えている（現在: \${dlqPendingCount}件）\`,
-      check: () => dlqPendingCount > 10,
-      severity: "error" as const,
-    },
-  ];
-
-  for (const policy of allPolicies) {
-    if (policy.check(metrics)) {
-      logger.warn(\`Alert triggered: \${policy.name}\`, {
-        policy: policy.name,
-        severity: policy.severity,
-      });
-
-      await notifier.send({
-        status: policy.severity === "error" ? "failure" : "warning",
-        title: \`[ALERT] \${policy.name}\`,
-        body: policy.description,
-        event_id: "system-alert",
-        provider: "eos-monitor",
-        timestamp: new Date().toISOString(),
-      });
-    }
-  }
-}`}
-          language="typescript"
-          filename="src/observability/alerts.ts"
-        />
-
-        <Callout type="tip">
-          アラートは「多すぎず少なすぎず」が重要です。
-          何でもアラートにすると「狼少年」になり、本当に重要なアラートが埋もれます。
-          まずは「失敗率」と「DLQ滞留」の2つから始めましょう。
-        </Callout>
-
-        {/* メトリクスエンドポイント */}
-        <h2 className="text-xl font-bold text-slate-900">メトリクスエンドポイント</h2>
-        <p className="text-slate-600 leading-relaxed">
-          HTTPエンドポイントでメトリクスを公開すると、外部ツール（Grafana等）から監視できます。
-        </p>
-
-        <CodeBlock
-          code={`// src/index.ts にメトリクスエンドポイントを追加
-
-import { metrics } from "./observability/metrics";
-
-app.get("/metrics", (c) => {
-  const snapshot = metrics.snapshot();
-  return c.json({
-    ...snapshot,
-    failure_rate: metrics.failureRate,
-    avg_duration_ms: metrics.avgDurationMs,
-    total_processed: metrics.totalProcessed,
-  });
-});
-
-// ヘルスチェックエンドポイント
-app.get("/health", (c) => {
-  const isHealthy = metrics.failureRate < 0.1; // 失敗率10%未満
-  return c.json(
-    { status: isHealthy ? "healthy" : "degraded" },
-    isHealthy ? 200 : 503
-  );
-});`}
-          language="typescript"
-          filename="src/index.ts（追加分）"
-        />
-
-        {/* 実践 */}
-        <h2 className="text-xl font-bold text-slate-900">実践: Claude Code に観測性を実装させる</h2>
-
-        <CodeBlock
-          code={`# Claude Code への指示例
-
-"観測性の機能を実装してください:
-
-1. src/observability/logger.ts - JSON構造化ログ
-   - child() で event_id/provider をコンテキスト追加
-   - ログレベル: debug/info/warn/error
-2. src/observability/metrics.ts - メトリクス収集
-   - 成功/失敗カウント、処理時間、DLQ件数
-   - failureRate, avgDurationMs のゲッター
-3. src/observability/alerts.ts - アラートポリシー
-   - 失敗率5%超 → Slack警告
-   - DLQ未処理10件超 → Slackエラー
-4. /metrics エンドポイントと /health エンドポイントの追加
-
-そして、Orchestrator の process メソッドにログ出力とメトリクス記録を組み込んでください。"`}
+          code={`セキュリティチェックを行ってください。
+.envが.gitignoreに含まれているか、
+コード内にハードコードされた秘密情報がないか確認してください。`}
           language="text"
           filename="Claude Code への指示"
         />
 
+        {/* 運用の基本 */}
+        <h2 className="text-xl font-bold text-slate-900">2. 運用の基本</h2>
+        <p className="text-slate-600 leading-relaxed">
+          自分以外の人がこのサービスを見たとき、
+          「何をするサービスか」「どう動かすか」がわかる状態にしておきます。
+        </p>
+
+        <div className="my-6 space-y-3">
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">README.md に書くべきこと</h3>
+            <ul className="mt-2 space-y-1.5 text-sm text-slate-600">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                サービスの概要（何をするサービスか、一言で）
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                起動方法（どのコマンドで動くか）
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                テスト実行方法（品質をどう確認するか）
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                トラブルシューティング（エラーが起きたらどうするか）
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <p className="text-sm font-medium text-slate-700">Claude Code への指示例:</p>
+        <CodeBlock
+          code={`README.md を充実させてください。
+サービスの概要、起動方法、テスト実行方法、
+トラブルシューティングを記載してください。`}
+          language="text"
+          filename="Claude Code への指示"
+        />
+
+        {/* 最終チェックリスト */}
+        <h2 className="text-xl font-bold text-slate-900">3. 最終チェックリスト</h2>
+        <p className="text-slate-600 leading-relaxed">
+          リリース前に確認すべき項目をまとめました。
+          全部自分で確認する必要はありません。Claude Code に丸ごと渡しましょう。
+        </p>
+
+        <div className="my-6 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border-2 border-red-200 bg-red-50 p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <svg className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+              <h3 className="font-bold text-red-800">セキュリティ</h3>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "シークレットが環境変数経由",
+                ".gitignore に .env が含まれている",
+                "署名検証が有効",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-red-700">
+                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="font-bold text-blue-800">品質</h3>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "テスト2回パス",
+                "外部監査パス",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-blue-700">
+                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-xl border-2 border-green-200 bg-green-50 p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384-3.065A2.25 2.25 0 003 14.086V17.5a2.25 2.25 0 002.036 1.98l.464.058a18.02 18.02 0 009 0l.464-.058A2.25 2.25 0 0017 17.5v-3.414a2.25 2.25 0 00-3.036-1.98l-5.384 3.065a2.25 2.25 0 01-2.16 0z" />
+              </svg>
+              <h3 className="font-bold text-green-800">運用</h3>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "README が完備されている",
+                "エラー対処手順がある",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-green-700">
+                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <svg className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+              <h3 className="font-bold text-purple-800">ドキュメント</h3>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "要求定義書（docs/requirements.md）がある",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-purple-700">
+                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <Callout type="tip">
+          最終チェックリストを Claude Code に渡して
+          「このチェックリストを全部確認してください」と指示するのが効率的です。
+          自分で一つずつ確認するより、抜け漏れなくチェックできます。
+        </Callout>
+
         <Callout type="info">
-          観測性は「運用を始めてから」ではなく「実装時に」組み込むものです。
-          後付けだと、障害が起きてから「ログがなくて原因がわからない」という事態になります。
+          セキュリティと運用は「動かす前の最低限のマナー」です。
+          完璧でなくてもいいので、基本は押さえましょう。
         </Callout>
       </StepLayout>
     </div>

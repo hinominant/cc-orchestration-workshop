@@ -2,56 +2,45 @@ const axes = [
   {
     id: "requirements",
     label: "要求定義",
-    weight: "20%",
-    criteria: {
-      pass: "UC1-UC4が具体的に記述され、非機能要件が3項目以上定義されている",
-      good: "UC5-UC6も記述され、DoD（完了定義）が定量的",
-      excellent:
-        "運用設計まで含め、要求間のトレーサビリティが取れている",
-    },
-  },
-  {
-    id: "architecture",
-    label: "設計",
-    weight: "20%",
-    criteria: {
-      pass: "5コンポーネントの責務が分離され、データフローが説明できる",
-      good: "拡張ポイント（新プロバイダー追加等）が設計に組み込まれている",
-      excellent:
-        "障害シナリオ（コンポーネント障害時の振る舞い）まで設計されている",
-    },
-  },
-  {
-    id: "implementation",
-    label: "実装",
     weight: "30%",
     criteria: {
-      pass: "UC1-UC4が動作し、ルール定義が外部ファイル化されている",
-      good: "冪等性・リトライ・DLQが実装されている",
+      pass: "Luna標準フォーマットに沿った要求定義書がある。ゴール・非ゴール・MUST/SHOULDが書かれている",
+      good: "AIと相談しながら要求定義を磨き上げ、制約条件と受入条件が具体的に書かれている",
       excellent:
-        "構造化ログ・メトリクス・アラートまで実装されている",
+        "非機能要件まで網羅し、要求定義書だけ読めば何を作るか誰でも理解できる",
     },
   },
   {
-    id: "operations",
-    label: "運用品質",
+    id: "organization",
+    label: "組織設計",
     weight: "20%",
     criteria: {
-      pass: "構造化ログが出力され、シークレットが安全に管理されている",
-      good: "アラートポリシーが定義され、インシデント手順がREADMEに記載",
+      pass: "エージェントチームに監査役（Sentinel）が含まれている。テスト2回+外部監査のルールがある",
+      good: "各エージェントの役割分担が明確で、CLAUDE.mdにチーム方針が書かれている",
       excellent:
-        "環境分離（dev/stg/prod）とPII マスキングが実装されている",
+        "チーム構成の「なぜ」を説明でき、別の題材でもチームを設計できる",
+    },
+  },
+  {
+    id: "completion",
+    label: "完成度",
+    weight: "30%",
+    criteria: {
+      pass: "サービスが起動し、基本的な動作（Webhook受信→通知）ができる。テストが通る",
+      good: "テスト2回実行+外部監査をパスしている。エラー時の挙動も確認済み",
+      excellent:
+        "信頼性（リトライ・DLQ）や観測性（構造化ログ）まで実装されている",
     },
   },
   {
     id: "presentation",
     label: "発表・説明",
-    weight: "10%",
+    weight: "20%",
     criteria: {
-      pass: "要求定義→設計→運用の流れを説明できる",
-      good: "設計判断の理由（なぜその構成にしたか）を説明できる",
+      pass: "要求定義→組織設計→完成物の流れを1分で説明できる",
+      good: "「なぜその組織設計にしたか」「なぜ監査が必要か」を説明できる",
       excellent:
-        "口頭質問（プロバイダー追加時の影響範囲等）に具体的に回答できる",
+        "質問（例: エージェントを追加するなら？）に具体的に回答できる",
     },
   },
 ];
@@ -74,7 +63,7 @@ export function Rubric() {
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-6 py-4">
           <h3 className="font-semibold text-slate-900">
-            評価ルーブリック（5軸）
+            評価ルーブリック（4軸）
           </h3>
           <p className="mt-1 text-sm text-slate-500">
             各軸で「合格」以上を満たすことが修了条件です

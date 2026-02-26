@@ -7,7 +7,7 @@ export default function IntermediateStep4Page() {
     <div className="px-4 py-8 sm:px-6 sm:py-12">
       <StepLayout
         stepNumber={4}
-        title="Orchestration 実装"
+        title="開発をすすめる"
         duration="60分"
         prevStep={3}
         nextStep={5}
@@ -17,417 +17,251 @@ export default function IntermediateStep4Page() {
         accentColor="bg-intermediate"
       >
         <p className="text-slate-600 leading-relaxed">
-          EOSの心臓部である Orchestrator を実装します。
-          イベントを受け取り、ルール定義に基づいて適切な Worker に振り分け、
-          結果を集約して Notifier に渡す、一連の処理チェーンを構築します。
+          あなたの仕事は「コードを書くこと」ではなく「方向を決めること」です。
+          Claude Code が実装を進めている間、あなたは開発の舵取りに集中してください。
         </p>
 
         <Callout type="info">
-          このSTEPは中級編で最も時間がかかります（60分）。
-          焦らず1つずつ進めてください。
-          agent-orchestrator のエージェントチェーンとの接続がポイントです。
+          この STEP が中級編で最も長い時間（60分）です。
+          焦らず、Claude Code との対話を楽しんでください。
         </Callout>
 
-        {/* 処理チェーンフロー */}
-        <h2 className="text-xl font-bold text-slate-900">処理チェーンフロー</h2>
+        {/* このSTEPの過ごし方 */}
+        <h2 className="text-xl font-bold text-slate-900">この STEP の過ごし方</h2>
         <p className="text-slate-600 leading-relaxed">
-          Orchestrator は以下の流れでイベントを処理します。
-          各ステップが独立しているため、途中で失敗しても影響範囲が限定されます。
+          Claude Code が実装を進めている間、あなたがやることは3つだけです。
+        </p>
+
+        <div className="my-6 space-y-4">
+          <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
+                1
+              </span>
+              <div>
+                <h3 className="font-semibold text-blue-800">質問に答える</h3>
+                <p className="mt-1 text-sm text-blue-700">
+                  Claude Code から「Slack の通知フォーマットはどうしますか？」
+                  「エラー時のリトライ回数は何回にしますか？」といった質問が来ます。
+                  要求定義書を見ながら答えてください。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border-2 border-amber-200 bg-amber-50 p-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-white">
+                2
+              </span>
+              <div>
+                <h3 className="font-semibold text-amber-800">進捗を確認する</h3>
+                <p className="mt-1 text-sm text-amber-700">
+                  途中で「現在の進捗を教えて」と聞くと、
+                  何が完了して何が残っているか教えてくれます。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-500 text-sm font-bold text-white">
+                3
+              </span>
+              <div>
+                <h3 className="font-semibold text-purple-800">方向修正する</h3>
+                <p className="mt-1 text-sm text-purple-700">
+                  「やっぱりこの機能は後回しで」「通知のメッセージはもっとシンプルにして」など、
+                  途中で方針を変えたい場合は遠慮なく伝えてください。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* よくある質問パターン */}
+        <h2 className="text-xl font-bold text-slate-900">よくある質問パターンと答え方</h2>
+        <p className="text-slate-600 leading-relaxed">
+          Claude Code から来る質問にはパターンがあります。
+          慌てなくて大丈夫です。以下を参考にしてください。
         </p>
 
         <div className="my-6 space-y-3">
-          {[
-            {
-              step: 1,
-              label: "冪等性チェック",
-              description: "event_id で重複を確認。処理済みならスキップ",
-              color: "border-slate-300 bg-slate-50",
-            },
-            {
-              step: 2,
-              label: "ルール照合",
-              description: "イベントの type/priority をルール定義と照合",
-              color: "border-amber-300 bg-amber-50",
-            },
-            {
-              step: 3,
-              label: "Worker 選択・実行",
-              description: "マッチしたルールに基づき Worker を呼び出し",
-              color: "border-purple-300 bg-purple-50",
-            },
-            {
-              step: 4,
-              label: "結果集約",
-              description: "Worker の処理結果を標準フォーマットに集約",
-              color: "border-blue-300 bg-blue-50",
-            },
-            {
-              step: 5,
-              label: "通知・永続化",
-              description: "Notifier に通知 + Storage にログを記録",
-              color: "border-green-300 bg-green-50",
-            },
-          ].map((item) => (
-            <div key={item.step} className={`flex items-center gap-4 rounded-lg border p-4 ${item.color}`}>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-white">
-                {item.step}
-              </span>
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200">
+                <span className="text-xs font-bold text-slate-600">Q</span>
+              </div>
               <div>
-                <p className="font-semibold text-slate-900">{item.label}</p>
-                <p className="text-sm text-slate-600">{item.description}</p>
+                <p className="font-medium text-slate-900">
+                  「○○の仕様はどうしますか？」
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  → 要求定義書（docs/requirements.md）を見て答える。
+                  書いてあればその通り伝え、書いてなければ「おまかせで」と答えて OK。
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200">
+                <span className="text-xs font-bold text-slate-600">Q</span>
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">
+                  「○○と△△のどちらにしますか？」
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  → どちらでもよければ「おまかせで」。
+                  こだわりがあれば「○○でお願いします」と伝える。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200">
+                <span className="text-xs font-bold text-slate-600">Q</span>
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">
+                  「エラーが発生しました」
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  → 「修正してください」でOK。
+                  エラーの内容を理解する必要はありません。Claude Code が自分で直します。
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* ルール定義の外部化 */}
-        <h2 className="text-xl font-bold text-slate-900">ルール定義の外部化（YAML）</h2>
-        <p className="text-slate-600 leading-relaxed">
-          イベントの振り分けルールをYAMLファイルで定義します。
-          コードを変更せずにルーティングを変更できるのが利点です。
-        </p>
-
-        <CodeBlock
-          code={`# rules/default.yml
-
-rules:
-  - name: "payment-events"
-    description: "決済関連イベントを優先処理"
-    match:
-      type: "payment.*"
-    action:
-      worker: "priority-worker"
-      notify: true
-      priority: "high"
-
-  - name: "user-events"
-    description: "ユーザー操作イベントを標準処理"
-    match:
-      type: "user.*"
-    action:
-      worker: "default-worker"
-      notify: true
-      priority: "normal"
-
-  - name: "system-events"
-    description: "システムイベントをログのみ"
-    match:
-      type: "system.*"
-    action:
-      worker: "default-worker"
-      notify: false
-      priority: "low"
-
-# マッチしなかった場合のデフォルト
-default:
-  worker: "default-worker"
-  notify: true
-  priority: "normal"`}
-          language="yaml"
-          filename="rules/default.yml"
-        />
-
         <Callout type="tip">
-          ルール定義をYAMLにする理由は「非エンジニアでも読み書きできる」からです。
-          運用担当者がルーティングを変更する場面を想定しています。
+          「おまかせで」は魔法の言葉です。判断に困ったら使いましょう。
+          ただし、要求定義に関わる重要な判断（機能の追加・削除など）は自分で決めてください。
         </Callout>
 
-        {/* ルール読み込み */}
-        <h2 className="text-xl font-bold text-slate-900">ルール読み込みの実装</h2>
+        {/* 便利な指示フレーズ */}
+        <h2 className="text-xl font-bold text-slate-900">便利な指示フレーズ</h2>
         <p className="text-slate-600 leading-relaxed">
-          YAMLファイルを読み込み、TypeScriptの型付きオブジェクトに変換する処理です。
+          開発中に使える指示フレーズをまとめました。
+          コピーしてそのまま使ってください。
         </p>
 
-        <CodeBlock
-          code={`// src/orchestrator/rules.ts
+        <div className="my-6 space-y-2">
+          <div className="rounded-md bg-slate-50 px-4 py-3">
+            <p className="text-sm font-mono text-slate-700">現在の進捗を教えてください</p>
+            <p className="mt-1 text-xs text-slate-500">→ 完了した作業と残りの作業を教えてくれます</p>
+          </div>
+          <div className="rounded-md bg-slate-50 px-4 py-3">
+            <p className="text-sm font-mono text-slate-700">docs/requirements.md を再度確認して、方針を修正してください</p>
+            <p className="mt-1 text-xs text-slate-500">→ 方向がおかしいと感じたときに使います</p>
+          </div>
+          <div className="rounded-md bg-slate-50 px-4 py-3">
+            <p className="text-sm font-mono text-slate-700">あなたの判断でお願いします</p>
+            <p className="mt-1 text-xs text-slate-500">→ わからない質問が来たときに使います</p>
+          </div>
+          <div className="rounded-md bg-slate-50 px-4 py-3">
+            <p className="text-sm font-mono text-slate-700">現在の状況を教えてください</p>
+            <p className="mt-1 text-xs text-slate-500">→ 開発が止まっているように見えるときに使います</p>
+          </div>
+        </div>
 
-import { readFileSync } from "node:fs";
-import { parse } from "yaml";
+        {/* 困ったときの対処法 */}
+        <h2 className="text-xl font-bold text-slate-900">困ったときの対処法</h2>
 
-export interface RoutingRule {
-  name: string;
-  description: string;
-  match: {
-    type: string;
-    provider?: string;
-  };
-  action: {
-    worker: string;
-    notify: boolean;
-    priority: "high" | "normal" | "low";
-  };
-}
+        <div className="my-6 space-y-3">
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">開発が止まっている</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              → 「現在の状況を教えてください」と入力してください。
+              何か問題があれば Claude Code が教えてくれます。
+            </p>
+          </div>
 
-export interface RoutingConfig {
-  rules: RoutingRule[];
-  default: {
-    worker: string;
-    notify: boolean;
-    priority: "high" | "normal" | "low";
-  };
-}
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">方向がおかしい</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              → 「docs/requirements.md を再度確認して、方針を修正してください」と伝えましょう。
+              要求定義書が正しい方向への道しるべになります。
+            </p>
+          </div>
 
-/**
- * ルール定義ファイルを読み込む
- * アプリ起動時に1回読み込み、メモリにキャッシュする
- */
-export function loadRoutingRules(filePath: string): RoutingConfig {
-  const content = readFileSync(filePath, "utf-8");
-  const config = parse(content) as RoutingConfig;
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">わからない質問が来た</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              → 「あなたの判断でお願いします」で大丈夫です。
+              Claude Code は合理的な判断をしてくれます。
+            </p>
+          </div>
 
-  if (!config.rules || !Array.isArray(config.rules)) {
-    throw new Error("Invalid routing config: 'rules' must be an array");
-  }
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">エラーが大量に出ている</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              → パニックにならないでください。「エラーを修正してください」と一言伝えるだけで、
+              Claude Code が自分でエラーを分析して修正します。
+            </p>
+          </div>
+        </div>
 
-  if (!config.default) {
-    throw new Error("Invalid routing config: 'default' is required");
-  }
+        {/* やってはいけないこと */}
+        <h2 className="text-xl font-bold text-slate-900">やってはいけないこと</h2>
 
-  return config;
-}
+        <div className="my-6 space-y-3">
+          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+            <h3 className="font-semibold text-red-800">コードを直接編集する</h3>
+            <p className="mt-2 text-sm text-red-700">
+              VS Code やエディタでコードを直接書き換えないでください。
+              修正が必要な場合は、Claude Code に「ここを修正して」と指示しましょう。
+              あなたがコードを触ると、Claude Code が混乱する原因になります。
+            </p>
+          </div>
 
-/**
- * イベントの type にマッチするルールを検索
- * ワイルドカード（*）をサポート
- */
-export function findMatchingRule(
-  config: RoutingConfig,
-  eventType: string,
-  eventProvider?: string
-): RoutingRule | null {
-  for (const rule of config.rules) {
-    // type のワイルドカードマッチ
-    const pattern = rule.match.type.replace("*", ".*");
-    const regex = new RegExp(\`^\${pattern}$\`);
+          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+            <h3 className="font-semibold text-red-800">要求定義にない機能を追加する</h3>
+            <p className="mt-2 text-sm text-red-700">
+              「ついでにこの機能も」と思っても、今回のスコープ内に留めてください。
+              機能追加は開発時間を大幅に伸ばします（スコープクリープ）。
+              追加したい場合は、今の実装が完了してから別途依頼しましょう。
+            </p>
+          </div>
 
-    if (!regex.test(eventType)) {
-      continue;
-    }
+          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+            <h3 className="font-semibold text-red-800">テストをスキップする</h3>
+            <p className="mt-2 text-sm text-red-700">
+              「テストは後でいいから先に進めて」は禁止です。
+              テストなしで進めると、後で大きな問題が見つかり、かえって時間がかかります。
+            </p>
+          </div>
+        </div>
 
-    // provider が指定されていればそれもチェック
-    if (rule.match.provider && rule.match.provider !== eventProvider) {
-      continue;
-    }
-
-    return rule;
-  }
-
-  return null;
-}`}
-          language="typescript"
-          filename="src/orchestrator/rules.ts"
-        />
-
-        {/* Orchestrator メインロジック */}
-        <h2 className="text-xl font-bold text-slate-900">Orchestrator メインロジック</h2>
-        <p className="text-slate-600 leading-relaxed">
-          ルール照合→Worker選択→結果集約を行うOrchestratorの本体です。
-          agent-orchestrator のチェーン制御パターンを参考にしています。
-        </p>
-
-        <CodeBlock
-          code={`// src/orchestrator/router.ts
-
-import type { EOSEvent, ProcessingResult, ActionResult } from "../types/event";
-import {
-  type RoutingConfig,
-  type RoutingRule,
-  findMatchingRule,
-} from "./rules";
-
-export interface OrchestratorDeps {
-  config: RoutingConfig;
-  notifier: { send(message: Record<string, unknown>): Promise<{ success: boolean }> };
-  checkIdempotency: (eventId: string) => Promise<boolean>;
-  recordEvent: (event: EOSEvent, result: ProcessingResult) => Promise<void>;
-}
-
-export class EventOrchestrator {
-  private readonly deps: OrchestratorDeps;
-
-  constructor(deps: OrchestratorDeps) {
-    this.deps = deps;
-  }
-
-  /**
-   * イベントを処理するメインパイプライン
-   */
-  async process(event: EOSEvent): Promise<ProcessingResult> {
-    const startTime = Date.now();
-
-    // Step 1: 冪等性チェック
-    const isDuplicate = await this.deps.checkIdempotency(event.event_id);
-    if (isDuplicate) {
-      return {
-        event_id: event.event_id,
-        status: "skipped",
-        actions: [],
-        processed_at: new Date().toISOString(),
-        duration_ms: Date.now() - startTime,
-      };
-    }
-
-    // Step 2: ルール照合
-    const rule = findMatchingRule(
-      this.deps.config,
-      event.type,
-      event.provider
-    );
-
-    const shouldNotify =
-      rule?.action.notify ?? this.deps.config.default.notify;
-
-    // Step 3: 処理実行
-    const actions: ActionResult[] = [];
-    let overallStatus: "success" | "failure" = "success";
-
-    try {
-      // ルールに基づいた処理を実行
-      actions.push({
-        action: \`process_\${event.type}\`,
-        status: "success",
-        detail: \`Event \${event.type} processed\`,
-      });
-    } catch (error) {
-      overallStatus = "failure";
-      actions.push({
-        action: \`process_\${event.type}\`,
-        status: "failure",
-        detail: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-
-    // Step 4: 結果集約
-    const result: ProcessingResult = {
-      event_id: event.event_id,
-      status: overallStatus,
-      actions,
-      processed_at: new Date().toISOString(),
-      duration_ms: Date.now() - startTime,
-    };
-
-    // Step 5: 通知 + 永続化
-    if (shouldNotify) {
-      await this.deps.notifier.send({
-        status: overallStatus === "success" ? "success" : "failure",
-        title: \`\${event.type} - \${overallStatus === "success" ? "成功" : "失敗"}\`,
-        body: actions.map(a => a.detail).join(", "),
-        event_id: event.event_id,
-        provider: event.provider,
-        timestamp: event.received_at,
-      });
-    }
-
-    await this.deps.recordEvent(event, result);
-
-    return result;
-  }
-}`}
-          language="typescript"
-          filename="src/orchestrator/router.ts"
-        />
-
-        {/* 処理ロジックの拡張例 */}
-        <h2 className="text-xl font-bold text-slate-900">処理ロジックの拡張例</h2>
-        <p className="text-slate-600 leading-relaxed">
-          ルール定義で指定された処理を router.ts 内で分岐して実行します。
-          イベントの種類に応じて異なるアクションを実行する例です。
-        </p>
-
-        <CodeBlock
-          code={`// src/orchestrator/router.ts 内の処理分岐例
-
-// ルールに基づいてイベント種別ごとの処理を分岐
-function processEvent(event: EOSEvent, rule: RoutingRule | null): ActionResult {
-  const priority = rule?.action.priority ?? "normal";
-
-  if (priority === "high") {
-    // 優先度の高いイベント（決済など）
-    console.log(\`[Router] High-priority processing: \${event.type}\`);
-    return {
-      action: \`priority_process_\${event.type}\`,
-      status: "success",
-      detail: \`High-priority event \${event.type} processed\`,
-    };
-  }
-
-  // 標準処理
-  console.log(\`[Router] Default processing: \${event.type}\`);
-  return {
-    action: \`default_process_\${event.type}\`,
-    status: "success",
-    detail: \`Event \${event.type} processed\`,
-  };
-}`}
-          language="typescript"
-          filename="src/orchestrator/router.ts（処理分岐部分）"
-        />
-
-        {/* 結果の標準化 */}
-        <h2 className="text-xl font-bold text-slate-900">実行結果の標準化</h2>
-        <p className="text-slate-600 leading-relaxed">
-          すべての処理は ProcessingResult 型で結果を返します。
-          これにより、Orchestrator は処理の詳細を知らなくても結果を統一的に扱えます。
-        </p>
-
-        <CodeBlock
-          code={`// 実行結果のフロー
-
-Router.process(event)
-  ↓ ProcessingResult を返す
-  ↓ status に応じて通知先を決定
-Notifier.send(message)
-  ↓ 成功/失敗/警告のメッセージ
-Reliability.record(event, result)
-  ↓ 冪等性キー記録 + イベントログ
-
-// ProcessingResult の構造
-{
-  event_id: string;                        // イベントID
-  status: "success" | "failure" | "skipped"; // 処理ステータス
-  actions: ActionResult[];                  // 実行されたアクション
-  processed_at: string;                    // 処理完了時刻
-  duration_ms: number;                     // 処理時間（ミリ秒）
-}`}
-          language="text"
-          filename="結果標準化フロー"
-        />
-
-        <Callout type="info">
-          Orchestrator は「指揮者」です。自分では業務ロジックを持たず、
-          ルールに基づいて処理を振り分け、結果を集約するだけです。
-          この分離が、テストのしやすさと拡張性を生みます。
+        <Callout type="warning">
+          コードを直接編集しないでください。
+          修正が必要な場合は、Claude Code に「ここを修正して」と指示しましょう。
         </Callout>
 
-        {/* 実践 */}
-        <h2 className="text-xl font-bold text-slate-900">実践: Claude Code に Orchestrator を実装させる</h2>
-        <p className="text-slate-600 leading-relaxed">
-          ここまでの設計を Claude Code に伝えて、Orchestrator の実装を依頼しましょう。
-        </p>
-
-        <CodeBlock
-          code={`# Claude Code への指示例
-
-"Orchestrator を実装してください:
-
-1. rules/default.yml - 3つ以上のルーティングルール
-2. src/orchestrator/router.ts - メインパイプライン
-   - 冪等性チェック → ルール照合 → 処理実行 → 通知 → 永続化
-   - イベント種別ごとの処理分岐
-
-要件:
-- ルール定義は YAML（rules/default.yml）で外部化
-- ワイルドカードマッチをサポート
-- ProcessingResult 型で結果を返す（event_id, status, actions, processed_at, duration_ms）
-- エラー時も結果を記録する"`}
-          language="text"
-          filename="Claude Code への指示"
-        />
-
-        <Callout type="tip">
-          実装後、src/index.ts を更新して Adapter → Orchestrator → Notifier が
-          一連のパイプラインとして接続されていることを確認してください。
-        </Callout>
+        {/* まとめ */}
+        <div className="rounded-lg border-2 border-amber-200 bg-amber-50 p-5">
+          <h3 className="font-semibold text-amber-800">この STEP のまとめ</h3>
+          <ul className="mt-2 space-y-2 text-sm text-amber-700">
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+              あなたの役割は「方向を決める人」。コードは Claude Code が書く
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+              質問には要求定義書を参考に答える。わからなければ「おまかせで」
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+              コードの直接編集・機能追加・テストスキップは禁止
+            </li>
+          </ul>
+        </div>
       </StepLayout>
     </div>
   );

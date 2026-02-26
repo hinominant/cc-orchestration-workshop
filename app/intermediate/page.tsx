@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { intermediateCourse } from "@/lib/courses";
-import { UseCaseList } from "@/components/UseCaseList";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
-import { RequirementsTemplate } from "@/components/RequirementsTemplate";
-import { Rubric } from "@/components/Rubric";
 
 const prerequisites = [
   {
     title: "初級編を修了していること",
-    description: "CLAUDE.md・Agent Team・自動ビルド・デプロイの基本を理解済み",
+    description:
+      "CLAUDE.md・Agent Team・自動ビルド・デプロイの基本を理解済み",
   },
   {
     title: "ターミナルの基本操作",
@@ -20,26 +18,73 @@ const prerequisites = [
   },
 ];
 
+const flow = [
+  {
+    step: "1",
+    title: "要求定義をつくる",
+    description:
+      "AIと相談しながら「何を作るか」をLuna標準フォーマットで文書化する",
+    color: "bg-amber-50 border-amber-200",
+    textColor: "text-amber-800",
+  },
+  {
+    step: "2",
+    title: "組織をつくる",
+    description:
+      "エージェントチームの組織図を設計する。誰が何をやるか、監査は誰がするか",
+    color: "bg-blue-50 border-blue-200",
+    textColor: "text-blue-800",
+  },
+  {
+    step: "3",
+    title: "Claude Codeに渡す",
+    description:
+      "要求定義書をClaude Codeに渡して開発をスタート。コードはAIが書く",
+    color: "bg-purple-50 border-purple-200",
+    textColor: "text-purple-800",
+  },
+  {
+    step: "4",
+    title: "質問に答えて調整",
+    description:
+      "Claude Codeが実装を進める。あなたは質問に答えて方向を微調整する",
+    color: "bg-green-50 border-green-200",
+    textColor: "text-green-800",
+  },
+  {
+    step: "5",
+    title: "テスト+監査で品質を担保",
+    description:
+      "テスト2回実行 + 外部監査で品質を確認。パスしなければ修正→再実行",
+    color: "bg-red-50 border-red-200",
+    textColor: "text-red-800",
+  },
+];
+
 const goals = [
   {
     grade: "A",
-    title: "要求定義からの設計",
-    description: "ユースケース・非機能要件・運用設計を網羅した要求定義書を作成し、設計に落とし込める",
+    title: "AIと協力して要求定義を作れる",
+    description:
+      "「何を作るか」を言語化し、AIに伝わる要求定義書をLuna標準フォーマットで作成できる",
   },
   {
     grade: "B",
-    title: "セキュリティ実装",
-    description: "Webhook署名検証・PIIマスク・監査ログなど、実サービス水準のセキュリティを実装できる",
+    title: "エージェントチームを設計できる",
+    description:
+      "誰が何をやるか、品質をどう担保するかを考え、適切なチーム編成ができる",
   },
   {
     grade: "C",
-    title: "信頼性と観測性",
-    description: "冪等性・リトライ・DLQ・構造化ログ・メトリクスにより、障害に強い基盤を構築できる",
+    title: "Claude Codeでサービスを完成させられる",
+    description:
+      "要求定義を渡し、質問に答えながらサービスを完成まで持っていける",
   },
   {
     grade: "D",
-    title: "運用設計",
-    description: "アラート・手順書・環境分離など、本番運用に必要な設計を行える",
+    title: "成果を説明できる",
+    description:
+      "要求定義→組織設計→完成物の流れを人に説明でき、品質担保の方法を語れる",
   },
 ];
 
@@ -53,18 +98,18 @@ export default function IntermediatePage() {
             {intermediateCourse.label}
           </span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            中級編:{" "}
-            <span className="text-intermediate-dark">
-              Event Orchestration Service
-            </span>
+            要求定義から開発・監査まで
+            <br className="hidden sm:inline" />
+            <span className="text-intermediate-dark">一気通貫</span>
           </h1>
           <p className="mt-4 text-lg text-slate-600 sm:text-xl">
-            要求定義からセキュリティ・信頼性・観測性まで、
+            AIと相談しながら要求定義を作り、
             <br className="hidden sm:inline" />
-            実サービス水準のオーケストレーション基盤を構築する。
+            エージェントチームに開発を任せて、品質を担保して完成させる。
           </p>
           <p className="mt-2 text-sm text-slate-500">
-            所要時間: {intermediateCourse.duration}
+            所要時間: {intermediateCourse.duration} / コードは全部 Claude Code
+            が書きます
           </p>
         </div>
       </section>
@@ -107,49 +152,57 @@ export default function IntermediatePage() {
         </div>
       </section>
 
-      {/* このコースで作るもの */}
+      {/* 中級編の進め方 */}
       <section className="bg-slate-50 px-4 py-12 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-2 text-xl font-bold text-slate-900">
-            このコースで作るもの
+            中級編の進め方
           </h2>
           <p className="mb-6 text-sm text-slate-600">
-            Event Orchestration Service（EOS）は、外部プロバイダーからのWebhookイベントを受信し、
-            ルールに基づいて処理を振り分け、結果を通知するオーケストレーション基盤です。
-            初級編で学んだAgent Teamの仕組みを使い、要求定義から設計・実装・運用設計までを一貫して行います。
+            初級編では「AIチームに任せて公開する」体験をしました。
+            中級編では「要求定義を作る→チームを設計する→品質を担保する」という
+            プロジェクトマネジメントの流れを体験します。
+          </p>
+
+          <div className="space-y-3">
+            {flow.map((item) => (
+              <div
+                key={item.step}
+                className={`flex items-center gap-4 rounded-lg border p-4 ${item.color}`}
+              >
+                <span
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold ${item.textColor}`}
+                >
+                  {item.step}
+                </span>
+                <div>
+                  <p className={`font-semibold ${item.textColor}`}>
+                    {item.title}
+                  </p>
+                  <p className="text-sm text-slate-600">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* エージェントチーム */}
+      <section className="px-4 py-12 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mb-2 text-xl font-bold text-slate-900">
+            エージェントチーム
+          </h2>
+          <p className="mb-6 text-sm text-slate-600">
+            中級編では以下のチーム構成で開発を進めます。
+            STEP 2 であなた自身がこの組織を設計します。
           </p>
           <ArchitectureDiagram />
         </div>
       </section>
 
-      {/* ユースケース一覧 */}
-      <section className="px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="mb-2 text-xl font-bold text-slate-900">
-            ユースケース一覧
-          </h2>
-          <p className="mb-6 text-sm text-slate-500">
-            EOSが満たすべき6つのユースケース。MUSTは必須、SHOULDは推奨です。
-          </p>
-          <UseCaseList />
-        </div>
-      </section>
-
-      {/* 要求定義テンプレート */}
-      <section className="bg-slate-50 px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="mb-2 text-xl font-bold text-slate-900">
-            要求定義テンプレート
-          </h2>
-          <p className="mb-6 text-sm text-slate-500">
-            STEP 1 ではこのテンプレートに沿って要求定義書を完成させます。
-          </p>
-          <RequirementsTemplate />
-        </div>
-      </section>
-
       {/* タイムライン */}
-      <section className="px-4 py-12 sm:px-6">
+      <section className="bg-slate-50 px-4 py-12 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-2 text-xl font-bold text-slate-900">
             タイムライン
@@ -163,7 +216,7 @@ export default function IntermediatePage() {
               <Link
                 key={step.id}
                 href={`/intermediate/step/${step.id}`}
-                className="group flex items-start gap-4 rounded-xl border border-slate-200 p-4 transition-all hover:border-amber-300 hover:shadow-sm"
+                className="group flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-amber-300 hover:shadow-sm"
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-sm font-bold text-amber-700 transition-colors group-hover:bg-amber-200">
                   {step.id}
@@ -201,16 +254,16 @@ export default function IntermediatePage() {
         </div>
       </section>
 
-      {/* ゴールと成功条件 */}
-      <section className="bg-slate-50 px-4 py-12 sm:px-6">
+      {/* ゴール */}
+      <section className="px-4 py-12 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-2 text-xl font-bold text-slate-900">
             ゴールと成功条件
           </h2>
           <p className="mb-6 text-sm text-slate-500">
-            4つの評価軸でRubricに基づいた自己評価を行います。
+            中級編を修了したら、以下の4つができるようになります。
           </p>
-          <div className="mb-8 grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {goals.map((goal) => (
               <div
                 key={goal.grade}
@@ -230,7 +283,6 @@ export default function IntermediatePage() {
               </div>
             ))}
           </div>
-          <Rubric />
         </div>
       </section>
 

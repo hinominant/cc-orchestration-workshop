@@ -43,7 +43,7 @@ export const beginnerCourse: Course = {
 export const intermediateCourse: Course = {
   id: "intermediate",
   label: "中級編",
-  subtitle: "Project 2 - 実サービス水準のオーケストレーション基盤",
+  subtitle: "Project 2 - 要求定義から開発・監査まで一気通貫",
   basePath: "/intermediate/step",
   topPath: "/intermediate",
   duration: "約5時間",
@@ -51,15 +51,15 @@ export const intermediateCourse: Course = {
   colorDark: "bg-intermediate-dark",
   colorLight: "bg-intermediate-light",
   steps: [
-    { id: 0, title: "環境準備", duration: "15分", description: "中級用スターターの準備とSecrets管理ルールの確認" },
-    { id: 1, title: "要求定義", duration: "20分", description: "ユースケース・非機能要件・運用設計を定義する" },
-    { id: 2, title: "アーキテクチャ設計", duration: "30分", description: "コンポーネント構成とデータフローを設計する" },
-    { id: 3, title: "Provider Adapter", duration: "45分", description: "Webhook受信とSlack通知のAdapter実装" },
-    { id: 4, title: "Orchestration", duration: "60分", description: "agent-orchestratorへの接続とルール分岐" },
-    { id: 5, title: "信頼性", duration: "45分", description: "冪等性・リトライ・Dead Letter Queue" },
-    { id: 6, title: "観測性", duration: "30分", description: "構造化ログ・メトリクス・アラート" },
-    { id: 7, title: "セキュリティ・運用", duration: "30分", description: "Secrets管理・権限分離・監査ログ・環境分離" },
-    { id: 8, title: "発表/レビュー", duration: "20分", description: "成果発表とRubric評価・KPT振り返り" },
+    { id: 0, title: "環境準備", duration: "15分", description: "Claude Code + agent-orchestrator のセットアップ" },
+    { id: 1, title: "要求定義をつくる", duration: "40分", description: "AIと相談しながらLuna標準フォーマットで要求定義書を作る" },
+    { id: 2, title: "組織をつくる", duration: "30分", description: "エージェントチームの組織図を設計する（監査役必須）" },
+    { id: 3, title: "要求定義をぶち込む", duration: "20分", description: "Claude Codeに要求定義を渡して開発をスタートする" },
+    { id: 4, title: "開発をすすめる", duration: "60分", description: "Claude Codeが実装、あなたは質問に答えて方向を調整" },
+    { id: 5, title: "テストと監査", duration: "40分", description: "テスト2回実行 + 外部監査で品質を担保する" },
+    { id: 6, title: "仕上げ", duration: "30分", description: "セキュリティ・運用の基本チェックと最終確認" },
+    { id: 7, title: "デプロイ", duration: "20分", description: "動作確認とデモ準備" },
+    { id: 8, title: "発表/レビュー", duration: "20分", description: "成果発表とKPT振り返り" },
   ],
 };
 

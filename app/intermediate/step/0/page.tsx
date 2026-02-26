@@ -9,26 +9,14 @@ import Link from "next/link";
 
 const checks = [
   {
-    id: "node",
-    label: "Node.js v18+ がインストールされている",
-    command: "node -v",
-    expected: "v18 以上が表示される",
-  },
-  {
     id: "claude",
     label: "Claude Code がインストールされている",
     command: "claude --version",
     expected: "バージョン番号が表示される",
   },
   {
-    id: "github",
-    label: "GitHub アカウントが準備できている",
-    command: "gh auth status",
-    expected: "Logged in と表示される",
-  },
-  {
     id: "fork",
-    label: "中級スターターリポジトリを Fork & Clone した",
+    label: "スターターリポジトリを Fork & Clone した",
     command:
       "git clone https://github.com/YOUR_NAME/cc-workshop-intermediate-starter.git",
     expected: "ローカルにリポジトリがクローンされる",
@@ -41,15 +29,23 @@ const checks = [
   },
   {
     id: "env",
-    label: ".env を .env.example から作成した",
+    label: ".env.example から .env をコピーした",
     command: "cp .env.example .env",
     expected: ".env ファイルが作成される",
   },
   {
-    id: "slack",
-    label: "Slack Webhook URL を設定した（テスト用でOK）",
+    id: "claude-start",
+    label: "Claude Code を起動して .claude/agents/ を確認した",
+    command: "claude",
+    expected: "Claude Code が起動する",
+  },
+  {
+    id: "agents",
+    label:
+      "sherpa.md, artisan.md, radar.md, sentinel.md が存在することを確認した",
     command: "",
-    expected: ".env の SLACK_WEBHOOK_URL にURLが設定されている",
+    expected:
+      ".claude/agents/ に sherpa.md, artisan.md, radar.md, sentinel.md がある",
   },
 ];
 
@@ -75,165 +71,119 @@ export default function IntermediateStep0Page() {
         accentColor="bg-intermediate"
       >
         <p className="text-slate-600 leading-relaxed">
-          中級編では「Event Orchestration Service（EOS）」を題材に、要求定義から設計・実装・運用まで一気通貫で学びます。
-          初級編との違いを理解し、開発環境を整えましょう。
+          中級編の環境を整えましょう。
+          初級編との違いを理解してから、スターターリポジトリの準備に入ります。
         </p>
 
         {/* 初級編との違い */}
         <h2 className="text-xl font-bold text-slate-900">初級編との違い</h2>
-        <p className="text-slate-600 leading-relaxed">
-          初級編では「AIチームに任せてサービスを公開する」体験がゴールでした。
-          中級編では、それに加えて以下の要素が加わります。
-        </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
             <h3 className="font-semibold text-blue-800">初級編</h3>
-            <ul className="mt-2 space-y-1 text-sm text-blue-700">
-              <li>- 静的サイトの自動ビルド</li>
-              <li>- CLAUDE.md による指示</li>
-              <li>- Fork → Build → Deploy</li>
-            </ul>
+            <p className="mt-2 text-sm text-blue-700 leading-relaxed">
+              AIチームに任せてサービスを公開する
+            </p>
+            <p className="mt-1 text-xs text-blue-600">
+              Fork → AIが自動ビルド → デプロイ
+            </p>
           </div>
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <h3 className="font-semibold text-amber-800">中級編（今回）</h3>
-            <ul className="mt-2 space-y-1 text-sm text-amber-700">
-              <li>- バックエンドサービスの設計・実装</li>
-              <li>- 要求定義書の作成</li>
-              <li>- 非機能要件（信頼性・観測性）</li>
-              <li>- 運用設計（セキュリティ・監視）</li>
-            </ul>
+            <p className="mt-2 text-sm text-amber-700 leading-relaxed">
+              要求定義 → 組織設計 → 品質担保の
+              プロジェクトマネジメント
+            </p>
+            <p className="mt-1 text-xs text-amber-600">
+              何を作るか決める → 誰がやるか決める → 品質を確認する
+            </p>
           </div>
         </div>
 
         <Callout type="info">
-          中級編のゴールは「動くサービスを作る」だけでなく、「なぜその設計にしたのか」を説明できるようになることです。
-          要求定義→設計→実装→運用の流れを体験します。
+          中級編ではコードを1行も書きません。
+          あなたの仕事は「何を作るか決めること」と「品質を確認すること」です。
+          コードはすべて Claude Code が書きます。
         </Callout>
 
-        {/* シークレット管理ルール */}
-        <h2 className="text-xl font-bold text-slate-900">シークレット管理のルール</h2>
+        {/* セットアップ手順 */}
+        <h2 className="text-xl font-bold text-slate-900">
+          セットアップ手順
+        </h2>
+
+        {/* 1. Claude Code 確認 */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          1. Claude Code の確認
+        </h3>
         <p className="text-slate-600 leading-relaxed">
-          中級編ではAPIキーやWebhook URLなどの秘密情報を扱います。
-          以下のルールを必ず守ってください。
+          ターミナルで以下のコマンドを実行して、Claude Code がインストールされていることを確認します。
         </p>
+        <CodeBlock code="claude --version" language="bash" />
 
-        <div className="space-y-3">
-          <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
-            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-              NG
-            </span>
-            <div>
-              <p className="font-semibold text-red-800">
-                コードに直接書かない
-              </p>
-              <p className="mt-1 text-sm text-red-600">
-                APIキーやURLをソースコードに直書きすると、GitHubにpushした瞬間に全世界に公開されます。
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
-            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-              NG
-            </span>
-            <div>
-              <p className="font-semibold text-red-800">
-                .envファイルを共有しない
-              </p>
-              <p className="mt-1 text-sm text-red-600">
-                .envは .gitignore に含まれています。Slackやメールで送るのも禁止です。
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4">
-            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-xs font-bold text-white">
-              OK
-            </span>
-            <div>
-              <p className="font-semibold text-green-800">
-                環境変数（.env）経由で読み込む
-              </p>
-              <p className="mt-1 text-sm text-green-600">
-                すべての秘密情報は .env ファイルに記述し、process.env 経由で読み込みます。
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <Callout type="warning">
-          講座ではダミーのProviderキーとテスト用のSlack Webhook URLを使います。
-          本番のAPIキーは絶対に使わないでください。
-        </Callout>
-
-        {/* サンドボックス環境 */}
-        <h2 className="text-xl font-bold text-slate-900">サンドボックス環境のセットアップ</h2>
+        {/* 2. Fork & Clone */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          2. スターターリポジトリを Fork & Clone
+        </h3>
         <p className="text-slate-600 leading-relaxed">
-          講座では安全なサンドボックス環境を使います。
-          .env.example をコピーして .env を作成し、テスト用の値を設定してください。
+          GitHub で以下のリポジトリを Fork してから、自分の環境に Clone します。
         </p>
-
         <CodeBlock
-          code={`# .env.example の内容
-# Provider A（ダミー）
-PROVIDER_A_SECRET=dummy-webhook-secret-for-workshop
-
-# Slack通知（テスト用Webhook URL）
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/TEST/WEBHOOK
-
-# ストレージ（ローカルファイル）
-STORAGE_PATH=./data/events
-
-# 環境
-NODE_ENV=development`}
+          code={`# GitHub で Fork してから
+git clone https://github.com/YOUR_NAME/cc-workshop-intermediate-starter.git
+cd cc-workshop-intermediate-starter`}
           language="bash"
-          filename=".env.example"
+          filename="Fork元: hinominant/cc-workshop-intermediate-starter"
         />
 
+        {/* 3. npm install */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          3. npm install
+        </h3>
+        <CodeBlock code="npm install" language="bash" />
+
+        {/* 4. .env 作成 */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          4. .env ファイルの作成
+        </h3>
+        <p className="text-slate-600 leading-relaxed">
+          .env.example をコピーして .env を作成します。
+        </p>
         <CodeBlock code="cp .env.example .env" language="bash" />
 
-        <Callout type="tip">
-          Slack Webhook URLの取得方法: Slackの「Incoming Webhooks」アプリから作成できます。
-          テスト用チャンネルに向けたURLを使うと安全です。
-          講師が用意したテスト用URLを使っても構いません。
+        <Callout type="warning">
+          .env ファイルの中身は絶対に GitHub に push しないでください。
+          .gitignore に含まれているので通常は大丈夫ですが、念のため確認しておきましょう。
         </Callout>
 
-        {/* agent-orchestrator 確認 */}
-        <h2 className="text-xl font-bold text-slate-900">agent-orchestrator の確認</h2>
+        {/* 5. Claude Code 起動 & agents 確認 */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          5. Claude Code を起動してエージェントを確認
+        </h3>
         <p className="text-slate-600 leading-relaxed">
-          中級スターターリポジトリには agent-orchestrator のエージェント定義が含まれています。
-          Claude Codeを起動して、エージェントが認識されていることを確認しましょう。
+          Claude Code を起動して、agent-orchestrator のエージェント定義ファイルを確認します。
+        </p>
+
+        <CodeBlock code="claude" language="bash" />
+
+        <p className="text-slate-600 leading-relaxed">
+          Claude Code が起動したら、以下のファイルが存在することを確認します。
         </p>
 
         <CodeBlock
-          code={`cd cc-workshop-intermediate-starter
-claude`}
-          language="bash"
-        />
-
-        <p className="text-slate-600 leading-relaxed">
-          Claude Codeが起動したら、以下のようにプロジェクト構成を確認します。
-        </p>
-
-        <CodeBlock
-          code={`# Claude Code 内で実行
-ls .claude/agents/`}
-          language="bash"
-        />
-
-        <p className="text-slate-600 leading-relaxed">
-          以下のエージェント定義ファイルが表示されれば準備完了です。
-        </p>
-
-        <CodeBlock
-          code={`_framework.md   # フレームワークプロトコル
-sherpa.md       # 要求分析・タスク分解
-artisan.md      # フロントエンド/バックエンド実装
-radar.md        # テスト・検証
-sentinel.md     # セキュリティ監査`}
+          code={`.claude/agents/
+  _framework.md   # チーム全体のルール
+  sherpa.md       # 計画を立てる参謀
+  artisan.md      # コードを書く実装者
+  radar.md        # テストを実行する検証者
+  sentinel.md     # セキュリティをチェックする監査役`}
           language="text"
+          filename="確認するファイル"
         />
+
+        <p className="text-slate-600 leading-relaxed">
+          これらのファイルが「AIチームのメンバー定義」です。
+          それぞれのエージェントがどんな役割を持つかは、STEP 2 で詳しく学びます。
+        </p>
 
         {/* 環境チェックリスト */}
         <h2 className="text-xl font-bold text-slate-900">環境チェックリスト</h2>
@@ -269,7 +219,7 @@ sentinel.md     # セキュリティ監査`}
                 環境準備が完了しました
               </p>
               <p className="mt-1 text-sm text-slate-500">
-                次のステップでは、EOSの要求定義書を書いていきます。
+                次のステップでは、「何を作るか」を決める要求定義書をつくります。
               </p>
               <Link
                 href="/intermediate/step/1"
@@ -298,7 +248,8 @@ sentinel.md     # セキュリティ監査`}
                 上のチェックリストをすべて確認してください
               </p>
               <p className="mt-1 text-xs text-slate-400">
-                {Object.values(checkedItems).filter(Boolean).length} / {checks.length} 完了
+                {Object.values(checkedItems).filter(Boolean).length} /{" "}
+                {checks.length} 完了
               </p>
             </div>
           )}
