@@ -7,6 +7,10 @@ export default function HomePage() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 to-white px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+            株式会社Luna 社内研修システム
+          </div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
             Claude Code x{" "}
             <span className="text-primary">オーケストレーション</span>講座
@@ -121,13 +125,13 @@ export default function HomePage() {
                 {intermediateCourse.subtitle}
               </h3>
               <p className="mt-2 text-sm text-slate-600">
-                要求定義からセキュリティ・信頼性・観測性まで、実サービス水準のオーケストレーション基盤を構築
+                要求定義から組織設計・開発・品質担保まで、一気通貫でサービスを構築する体験
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">要求定義</span>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">セキュリティ</span>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">信頼性</span>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">観測性</span>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">組織設計</span>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">品質担保</span>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">Vercelデプロイ</span>
               </div>
 
               {/* Step list */}
