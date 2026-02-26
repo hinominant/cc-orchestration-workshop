@@ -9,6 +9,9 @@
   --accent: #3b82f6;
   --muted: #f1f5f9;
   --border: #e2e8f0;
+  --intermediate: #d97706;
+  --intermediate-dark: #b45309;
+  --intermediate-light: #fef3c7;
 }
 
 @theme inline {
@@ -20,6 +23,9 @@
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-intermediate: var(--intermediate);
+  --color-intermediate-dark: var(--intermediate-dark);
+  --color-intermediate-light: var(--intermediate-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

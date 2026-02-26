@@ -8,6 +8,10 @@ interface StepLayoutProps {
   prevStep?: number;
   nextStep?: number;
   nextDisabled?: boolean;
+  courseBase?: string;
+  courseLabel?: string;
+  topHref?: string;
+  accentColor?: string;
 }
 
 export function StepLayout({
@@ -17,13 +21,25 @@ export function StepLayout({
   children,
   prevStep,
   nextStep,
+  courseBase = "/step",
+  courseLabel,
+  topHref = "/",
+  accentColor,
 }: StepLayoutProps) {
+  const badgeClass = accentColor
+    ? `inline-flex items-center rounded-full px-3 py-1 text-xs font-bold text-white ${accentColor}`
+    : "inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-bold text-white";
+
+  const nextBtnClass = accentColor
+    ? `inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors ${accentColor} hover:opacity-90`
+    : "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark";
+
   return (
     <article className="mx-auto max-w-3xl">
       <header className="mb-8">
         <div className="mb-2 flex items-center gap-3">
-          <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-bold text-white">
-            STEP {stepNumber}
+          <span className={badgeClass}>
+            {courseLabel ? `${courseLabel} ` : ""}STEP {stepNumber}
           </span>
           <span className="text-sm text-slate-500">{duration}</span>
         </div>
@@ -37,7 +53,7 @@ export function StepLayout({
       <footer className="mt-12 flex items-center justify-between border-t border-slate-200 pt-6">
         {prevStep !== undefined ? (
           <Link
-            href={`/step/${prevStep}`}
+            href={`${courseBase}/${prevStep}`}
             className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
           >
             <svg
@@ -58,7 +74,7 @@ export function StepLayout({
           </Link>
         ) : (
           <Link
-            href="/"
+            href={topHref}
             className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
           >
             <svg
@@ -81,8 +97,8 @@ export function StepLayout({
 
         {nextStep !== undefined ? (
           <Link
-            href={`/step/${nextStep}`}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+            href={`${courseBase}/${nextStep}`}
+            className={nextBtnClass}
           >
             STEP {nextStep} へ進む
             <svg
@@ -102,8 +118,8 @@ export function StepLayout({
           </Link>
         ) : (
           <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+            href={topHref}
+            className={nextBtnClass}
           >
             トップへ戻る
             <svg
