@@ -15,34 +15,26 @@ const checks = [
     expected: "バージョン番号が表示される",
   },
   {
-    id: "fork",
-    label: "スターターリポジトリを Fork & Clone した",
-    command:
-      "git clone https://github.com/YOUR_NAME/cc-workshop-intermediate-starter.git",
-    expected: "ローカルにリポジトリがクローンされる",
+    id: "dir",
+    label: "プロジェクトディレクトリを作成した",
+    command: "mkdir my-email-service && cd my-email-service && npm init -y",
+    expected: "package.json が生成される",
   },
   {
-    id: "install",
-    label: "npm install が完了した",
-    command: "cd cc-workshop-intermediate-starter && npm install",
-    expected: "依存パッケージがインストールされる",
-  },
-  {
-    id: "env",
-    label: ".env.example から .env をコピーした",
-    command: "cp .env.example .env",
-    expected: ".env ファイルが作成される",
-  },
-  {
-    id: "claude-start",
-    label: "Claude Code を起動して .claude/agents/ を確認した",
+    id: "start",
+    label: "Claude Code を起動した",
     command: "claude",
     expected: "Claude Code が起動する",
   },
   {
+    id: "orchestrator",
+    label: "agent-orchestrator を導入した",
+    command: "",
+    expected: "Claude Code に指示して導入済み",
+  },
+  {
     id: "agents",
-    label:
-      "sherpa.md, artisan.md, radar.md, sentinel.md が存在することを確認した",
+    label: "エージェントファイルが存在する",
     command: "",
     expected:
       ".claude/agents/ に sherpa.md, artisan.md, radar.md, sentinel.md がある",
@@ -72,7 +64,7 @@ export default function IntermediateStep0Page() {
       >
         <p className="text-slate-600 leading-relaxed">
           中級編の環境を整えましょう。
-          初級編との違いを理解してから、スターターリポジトリの準備に入ります。
+          初級編との違いを理解してから、プロジェクトの準備に入ります。
         </p>
 
         {/* 初級編との違い */}
@@ -111,62 +103,68 @@ export default function IntermediateStep0Page() {
           セットアップ手順
         </h2>
 
-        {/* 1. Claude Code 確認 */}
+        {/* Step 1: Claude Code 確認 */}
         <h3 className="text-lg font-semibold text-slate-800">
-          1. Claude Code の確認
+          1. Claude Code がインストールされているか確認
         </h3>
         <p className="text-slate-600 leading-relaxed">
           ターミナルで以下のコマンドを実行して、Claude Code がインストールされていることを確認します。
         </p>
         <CodeBlock code="claude --version" language="bash" />
 
-        {/* 2. Fork & Clone */}
+        {/* Step 2: プロジェクトディレクトリ作成 */}
         <h3 className="text-lg font-semibold text-slate-800">
-          2. スターターリポジトリを Fork & Clone
+          2. 新しいプロジェクトディレクトリを作る
         </h3>
         <p className="text-slate-600 leading-relaxed">
-          GitHub で以下のリポジトリを Fork してから、自分の環境に Clone します。
+          中級編では、空のプロジェクトからスタートします。
+          ターミナルで以下のコマンドを実行して、プロジェクトディレクトリを作成します。
         </p>
         <CodeBlock
-          code={`# GitHub で Fork してから
-git clone https://github.com/YOUR_NAME/cc-workshop-intermediate-starter.git
-cd cc-workshop-intermediate-starter`}
+          code={`mkdir my-email-service && cd my-email-service && npm init -y`}
           language="bash"
-          filename="Fork元: hinominant/cc-workshop-intermediate-starter"
         />
 
-        {/* 3. npm install */}
+        {/* Step 3: Claude Code 起動 */}
         <h3 className="text-lg font-semibold text-slate-800">
-          3. npm install
-        </h3>
-        <CodeBlock code="npm install" language="bash" />
-
-        {/* 4. .env 作成 */}
-        <h3 className="text-lg font-semibold text-slate-800">
-          4. .env ファイルの作成
+          3. Claude Code を起動する
         </h3>
         <p className="text-slate-600 leading-relaxed">
-          .env.example をコピーして .env を作成します。
+          作成したディレクトリに移動して、Claude Code を起動します。
         </p>
-        <CodeBlock code="cp .env.example .env" language="bash" />
+        <CodeBlock
+          code={`cd my-email-service
+claude`}
+          language="bash"
+        />
 
-        <Callout type="warning">
-          .env ファイルの中身は絶対に GitHub に push しないでください。
-          .gitignore に含まれているので通常は大丈夫ですが、念のため確認しておきましょう。
+        {/* Step 4: agent-orchestrator インストール */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          4. agent-orchestrator を導入する
+        </h3>
+        <p className="text-slate-600 leading-relaxed">
+          Claude Code が起動したら、以下のように指示して agent-orchestrator を導入します。
+          Claude Code が README を読んで、自動的にエージェントチームをセットアップしてくれます。
+        </p>
+        <CodeBlock
+          code={`agent-orchestratorを導入してください。
+https://github.com/hinominant/agent-orchestrator の README を読んで、
+このプロジェクトにエージェントチームをセットアップしてください。`}
+          language="text"
+          filename="Claude Code への指示"
+        />
+
+        <Callout type="tip">
+          Claude Code はURLを読み取って、自動的にファイルを生成します。
+          「こういうファイルを作りますか？」と聞かれたら「はい」と答えてください。
         </Callout>
 
-        {/* 5. Claude Code 起動 & agents 確認 */}
+        {/* Step 5: エージェント確認 */}
         <h3 className="text-lg font-semibold text-slate-800">
-          5. Claude Code を起動してエージェントを確認
+          5. エージェントが導入されたことを確認する
         </h3>
         <p className="text-slate-600 leading-relaxed">
-          Claude Code を起動して、agent-orchestrator のエージェント定義ファイルを確認します。
-        </p>
-
-        <CodeBlock code="claude" language="bash" />
-
-        <p className="text-slate-600 leading-relaxed">
-          Claude Code が起動したら、以下のファイルが存在することを確認します。
+          以下のファイルが生成されていることを確認します。
         </p>
 
         <CodeBlock

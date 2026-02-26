@@ -21,31 +21,42 @@ export default function IntermediateStep3Page() {
           ここからはAIが主役。あなたは1行もコードを書きません。
         </p>
 
-        {/* Claude Code を開く */}
-        <h2 className="text-xl font-bold text-slate-900">Claude Code を開く</h2>
+        {/* Claude Code の確認 */}
+        <h2 className="text-xl font-bold text-slate-900">Claude Code の確認</h2>
         <p className="text-slate-600 leading-relaxed">
-          まずターミナルで、スターターリポジトリのディレクトリに移動して Claude Code を起動します。
+          Claude Code が起動していなければ、プロジェクトディレクトリで{" "}
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm font-mono">claude</code>{" "}
+          を実行して起動してください。
         </p>
 
-        <CodeBlock
-          code={`cd cc-workshop-intermediate-starter
-claude`}
-          language="bash"
-          filename="ターミナルで実行"
-        />
-
+        {/* 要求定義書・要件定義書をコピペする */}
+        <h2 className="text-xl font-bold text-slate-900">要求定義書・要件定義書をコピペする</h2>
         <p className="text-slate-600 leading-relaxed">
-          Claude Code が起動したら、対話画面が表示されます。
-          ここに「何をしてほしいか」を日本語で伝えるだけです。
+          STEP 2 で外部AI（GPT / Gemini など）を使って作成した要求定義書と要件定義書を、
+          プロジェクトに保存します。
         </p>
 
-        {/* 要求定義書を渡す */}
-        <h2 className="text-xl font-bold text-slate-900">要求定義書を渡す</h2>
-        <p className="text-slate-600 leading-relaxed">
-          STEP 2 で作成した要求定義書（docs/requirements.md）は、
-          すでにスターターリポジトリに含まれています。
-          Claude Code にこのファイルを読ませて、開発を開始させましょう。
-        </p>
+        <div className="my-6 space-y-3">
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">1. 要求定義書を保存</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm font-mono">docs/requirements.md</code>{" "}
+              を作成し、外部AIで作成した要求定義書の内容をコピペしてください。
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">2. 要件定義書を保存</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm font-mono">docs/specifications.md</code>{" "}
+              を作成し、外部AIで作成した要件定義書の内容をコピペしてください。
+            </p>
+          </div>
+        </div>
+
+        <Callout type="tip">
+          要求定義書は「何を作るか（What）」、要件定義書は「どう作るか（How）」です。
+          この2つがあれば、Claude Code は具体的な実装計画を立てられます。
+        </Callout>
 
         <h3 className="text-lg font-semibold text-slate-900">最初の指示</h3>
         <p className="text-slate-600 leading-relaxed">
@@ -53,17 +64,18 @@ claude`}
         </p>
 
         <CodeBlock
-          code={`docs/requirements.md を読んで、この要求定義に基づいてサービスを実装してください。
+          code={`docs/requirements.md と docs/specifications.md を読んで、
+この要求定義と要件定義に基づいてメール配信システムを実装してください。
 CLAUDE.md のルールに従い、エージェントチームで開発を進めてください。`}
           language="text"
           filename="Claude Code への最初の指示"
         />
 
         <Callout type="tip">
-          最初の指示は「要求定義を読んで実装してください」で十分です。
+          最初の指示は「要求定義と要件定義を読んで実装してください」で十分です。
           細かい指示は後から追加できます。
           具体的すぎる指示はかえって逆効果になることがあります。
-          要求定義書があるので、大まかに伝えればAIが自分で計画を立てます。
+          要求定義書と要件定義書があるので、大まかに伝えればAIが自分で計画を立てます。
         </Callout>
 
         {/* Claude Code が動き始めたら */}
@@ -77,8 +89,8 @@ CLAUDE.md のルールに従い、エージェントチームで開発を進め�
           {[
             {
               step: 1,
-              label: "要求定義書を読み込む",
-              description: "docs/requirements.md の内容を分析し、何を作るべきか理解します",
+              label: "要求定義書・要件定義書を読み込む",
+              description: "docs/requirements.md と docs/specifications.md の内容を分析し、何をどう作るべきか理解します",
               color: "border-blue-300 bg-blue-50",
             },
             {
@@ -118,7 +130,7 @@ CLAUDE.md のルールに従い、エージェントチームで開発を進め�
         </p>
 
         <Callout type="info">
-          Claude Code は要求定義書を読んで、自動で計画を立て、実装を始めます。
+          Claude Code は要求定義書と要件定義書を読んで、自動で計画を立て、実装を始めます。
           あなたが1行もコードを書く必要はありません。
         </Callout>
 
@@ -177,11 +189,11 @@ CLAUDE.md のルールに従い、エージェントチームで開発を進め�
           <ul className="mt-2 space-y-2 text-sm text-amber-700">
             <li className="flex items-start gap-2">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
-              スターターリポジトリで Claude Code を起動した
+              要求定義書と要件定義書をプロジェクトに保存した
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
-              要求定義書を読んで実装を開始するよう指示した
+              Claude Code に要求定義・要件定義を読ませて実装を開始した
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />

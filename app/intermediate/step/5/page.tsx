@@ -184,8 +184,8 @@ export default function IntermediateStep5Page() {
               <div>
                 <h4 className="font-semibold text-slate-900">設計整合性</h4>
                 <p className="mt-1 text-sm text-slate-600">
-                  要求定義書（docs/requirements.md）に書かれた機能がすべて実装されているか。
-                  設計の方針と実装が一致しているか。
+                  要求定義書（docs/requirements.md）と要件定義書（docs/specifications.md）に書かれた機能がすべて実装されているか。
+                  要件定義の仕様と実装が一致しているか。
                 </p>
               </div>
             </div>
@@ -211,7 +211,8 @@ export default function IntermediateStep5Page() {
 
         <CodeBlock
           code={`Sentinel エージェントで外部監査を実行してください。
-セキュリティ・設計整合性・エッジケースをチェックしてください。`}
+docs/requirements.md と docs/specifications.md をベースに、
+要求との整合性・セキュリティ・エッジケースをチェックしてください。`}
           language="text"
           filename="外部監査の指示"
         />
@@ -262,7 +263,7 @@ export default function IntermediateStep5Page() {
 
         <CodeBlock
           code={`この問題を修正してください。
-修正後、テストを2回実行し、もう一度 Sentinel で監査を実行してください。`}
+修正後、テストを2回実行し、もう一度 Sentinel で docs/requirements.md と docs/specifications.md をベースに監査を実行してください。`}
           language="text"
           filename="問題発見時のまとめ指示"
         />

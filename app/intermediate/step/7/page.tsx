@@ -47,14 +47,14 @@ export default function IntermediateStep7Page() {
             <div className="flex items-start gap-3">
               <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">2</span>
               <div className="w-full">
-                <h3 className="font-semibold text-slate-900">テスト用Webhookを送信して動作確認</h3>
+                <h3 className="font-semibold text-slate-900">テスト用APIリクエストを送信して動作確認</h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  別のターミナルを開いて、以下のコマンドでテスト用のWebhookを送信します。
+                  別のターミナルを開いて、以下のコマンドでメール配信APIにリクエストを送信します。
                 </p>
                 <CodeBlock
-                  code={`curl -X POST http://localhost:3000/webhook \\
+                  code={`curl -X POST http://localhost:3000/api/send \\
   -H "Content-Type: application/json" \\
-  -d '{"event": "test", "message": "Hello from workshop!"}'`}
+  -d '{"listId": "test-list", "templateId": "welcome"}'`}
                   language="bash"
                   filename="ターミナル（別ウィンドウ）"
                 />
@@ -66,10 +66,10 @@ export default function IntermediateStep7Page() {
             <div className="flex items-start gap-3">
               <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">3</span>
               <div>
-                <h3 className="font-semibold text-slate-900">Slack通知が届くことを確認</h3>
+                <h3 className="font-semibold text-slate-900">コンソールにメール送信ログが出力されることを確認</h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  Slackのチャンネルに通知が届いていれば成功です。
-                  届かない場合は、.env の Webhook URL が正しいか確認してください。
+                  サーバーを起動したターミナルにメール送信のログが表示されていれば成功です。
+                  エラーが出る場合は、環境変数やAPIの設定を確認してください。
                 </p>
               </div>
             </div>
@@ -96,8 +96,53 @@ export default function IntermediateStep7Page() {
           GitHubにアップロードされると取り消しが困難です。
         </Callout>
 
+        {/* Vercelデプロイ */}
+        <h2 className="text-xl font-bold text-slate-900">3. Vercelにデプロイ</h2>
+        <p className="text-slate-600 leading-relaxed">
+          GitHubにpushしたら、Vercelにデプロイしてインターネット上に公開します。
+        </p>
+
+        <Callout type="info">
+          Vercelアカウントがない場合は{" "}
+          <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="font-medium underline">
+            vercel.com
+          </a>
+          {" "}で無料登録してください。GitHubアカウントで簡単にサインアップできます。
+        </Callout>
+
+        <p className="text-sm font-medium text-slate-700">Claude Code への指示:</p>
+        <CodeBlock
+          code={`このプロジェクトをVercelにデプロイできるように設定してください。
+vercel.json の作成が必要であれば作成してください。`}
+          language="text"
+          filename="Claude Code への指示"
+        />
+
+        <div className="my-6 space-y-4">
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">方法A: Vercel CLIでデプロイ</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              ターミナルから直接デプロイできます。初回はVercelアカウントとの連携が求められます。
+            </p>
+            <CodeBlock
+              code="npx vercel"
+              language="bash"
+              filename="ターミナル"
+            />
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">方法B: Vercelダッシュボードから連携</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Vercelのダッシュボード（vercel.com/dashboard）から「Add New Project」を選択し、
+              GitHubリポジトリを連携するだけで自動デプロイが設定されます。
+              以降はGitHubにpushするたびに自動でデプロイされます。
+            </p>
+          </div>
+        </div>
+
         {/* デモ準備 */}
-        <h2 className="text-xl font-bold text-slate-900">3. デモ準備</h2>
+        <h2 className="text-xl font-bold text-slate-900">4. デモ準備</h2>
         <p className="text-slate-600 leading-relaxed">
           次のSTEPで発表があります。何を見せるか、どう話すかを整理しておきましょう。
         </p>
@@ -115,6 +160,14 @@ export default function IntermediateStep7Page() {
             },
             {
               number: 2,
+              title: "要件定義書",
+              detail: "docs/specifications.md",
+              color: "border-orange-200 bg-orange-50",
+              textColor: "text-orange-800",
+              subColor: "text-orange-600",
+            },
+            {
+              number: 3,
               title: "エージェントチームの構成",
               detail: "CLAUDE.md",
               color: "border-blue-200 bg-blue-50",
@@ -122,15 +175,15 @@ export default function IntermediateStep7Page() {
               subColor: "text-blue-600",
             },
             {
-              number: 3,
+              number: 4,
               title: "動作デモ",
-              detail: "Webhook送信 → Slack通知",
+              detail: "API実行 → メール送信ログ",
               color: "border-green-200 bg-green-50",
               textColor: "text-green-800",
               subColor: "text-green-600",
             },
             {
-              number: 4,
+              number: 5,
               title: "テスト結果",
               detail: "2回分のテスト実行結果",
               color: "border-purple-200 bg-purple-50",
@@ -184,7 +237,7 @@ export default function IntermediateStep7Page() {
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-700 text-xs font-bold text-white">3</span>
             <div>
               <p className="font-medium text-slate-800">「こう動きます」</p>
-              <p className="text-sm text-slate-500">デモ（Webhook送信 → Slack通知）</p>
+              <p className="text-sm text-slate-500">デモ（API実行 → メール配信）</p>
             </div>
           </div>
           <div className="flex items-center justify-center">

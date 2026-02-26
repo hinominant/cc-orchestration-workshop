@@ -59,10 +59,10 @@ export default function IntermediateStep6Page() {
             <div className="flex items-start gap-3">
               <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">3</span>
               <div>
-                <h3 className="font-semibold text-slate-900">Webhook署名検証が有効になっているか</h3>
+                <h3 className="font-semibold text-slate-900">APIエンドポイントへの不正アクセス対策がされているか</h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  署名検証がないと、誰でもWebhookエンドポイントにデータを送れてしまいます。
-                  「本物のリクエストかどうか」を確認する仕組みです。
+                  認証なしでAPIを公開すると、誰でもメール送信できてしまいます。
+                  APIキーによる認証やレートリミットなど、基本的な対策を確認しましょう。
                 </p>
               </div>
             </div>
@@ -78,42 +78,46 @@ export default function IntermediateStep6Page() {
           filename="Claude Code への指示"
         />
 
-        {/* 運用の基本 */}
-        <h2 className="text-xl font-bold text-slate-900">2. 運用の基本</h2>
+        {/* ドキュメント整備 */}
+        <h2 className="text-xl font-bold text-slate-900">2. ドキュメント整備</h2>
         <p className="text-slate-600 leading-relaxed">
           自分以外の人がこのサービスを見たとき、
-          「何をするサービスか」「どう動かすか」がわかる状態にしておきます。
+          「何をするサービスか」「どう動かすか」「どう動くべきか」がわかる状態にしておきます。
+          以下の3つのドキュメントが必須です。
         </p>
 
         <div className="my-6 space-y-3">
           <div className="rounded-lg border border-slate-200 p-4">
-            <h3 className="font-semibold text-slate-900">README.md に書くべきこと</h3>
-            <ul className="mt-2 space-y-1.5 text-sm text-slate-600">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                サービスの概要（何をするサービスか、一言で）
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                起動方法（どのコマンドで動くか）
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                テスト実行方法（品質をどう確認するか）
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                トラブルシューティング（エラーが起きたらどうするか）
-              </li>
-            </ul>
+            <h3 className="font-semibold text-slate-900">README.md</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              サービスの概要、起動方法、テスト実行方法を記載します。
+              初めてこのリポジトリを見た人が迷わず動かせる状態を目指します。
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">要求定義書（docs/requirements.md）</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              「何を作るか」を定義したドキュメントです。
+              STEP 1 で作成した要求定義が、最新の実装と整合しているか確認します。
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-900">要件定義書（docs/specifications.md）</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              「どう動くべきか」を定義したドキュメントです。
+              APIの仕様、データ構造、エラー処理のルールなど、実装の基準になる情報をまとめます。
+            </p>
           </div>
         </div>
 
         <p className="text-sm font-medium text-slate-700">Claude Code への指示例:</p>
         <CodeBlock
-          code={`README.md を充実させてください。
-サービスの概要、起動方法、テスト実行方法、
-トラブルシューティングを記載してください。`}
+          code={`以下のドキュメントを確認・整備してください:
+- README.md（サービス概要、起動方法、テスト方法）
+- docs/requirements.md（要求定義書が最新の実装と整合しているか）
+- docs/specifications.md（要件定義書が最新の実装と整合しているか）`}
           language="text"
           filename="Claude Code への指示"
         />
@@ -137,7 +141,7 @@ export default function IntermediateStep6Page() {
               {[
                 "シークレットが環境変数経由",
                 ".gitignore に .env が含まれている",
-                "署名検証が有効",
+                "不正アクセス対策がされている",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-red-700">
                   <svg className="mt-0.5 h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
@@ -176,12 +180,13 @@ export default function IntermediateStep6Page() {
               <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384-3.065A2.25 2.25 0 003 14.086V17.5a2.25 2.25 0 002.036 1.98l.464.058a18.02 18.02 0 009 0l.464-.058A2.25 2.25 0 0017 17.5v-3.414a2.25 2.25 0 00-3.036-1.98l-5.384 3.065a2.25 2.25 0 01-2.16 0z" />
               </svg>
-              <h3 className="font-bold text-green-800">運用</h3>
+              <h3 className="font-bold text-green-800">ドキュメント</h3>
             </div>
             <ul className="space-y-2">
               {[
-                "README が完備されている",
-                "エラー対処手順がある",
+                "README.md が完備されている",
+                "要求定義書（docs/requirements.md）がある",
+                "要件定義書（docs/specifications.md）がある",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-green-700">
                   <svg className="mt-0.5 h-4 w-4 shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
@@ -193,26 +198,6 @@ export default function IntermediateStep6Page() {
             </ul>
           </div>
 
-          <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-5">
-            <div className="mb-3 flex items-center gap-2">
-              <svg className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-              </svg>
-              <h3 className="font-bold text-purple-800">ドキュメント</h3>
-            </div>
-            <ul className="space-y-2">
-              {[
-                "要求定義書（docs/requirements.md）がある",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-purple-700">
-                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <Callout type="tip">

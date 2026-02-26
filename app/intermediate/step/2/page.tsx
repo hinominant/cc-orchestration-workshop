@@ -18,7 +18,7 @@ export default function IntermediateStep2Page() {
         accentColor="bg-intermediate"
       >
         <p className="text-slate-600 leading-relaxed">
-          要求定義書ができたら、次は「誰が何をやるか」を決めます。
+          要求定義書と要件定義書ができたら、次は「誰が何をやるか」を決めます。
           ここで言う「誰」とは人間ではなく、AIエージェントのことです。
           アーキテクチャ設計ではなく、組織設計。チームの役割分担を決めましょう。
         </p>
@@ -28,7 +28,7 @@ export default function IntermediateStep2Page() {
           エージェントチームの組織図
         </h2>
         <p className="text-slate-600 leading-relaxed">
-          スターターリポジトリには、4つのエージェントが定義されています。
+          agent-orchestrator を導入すると、4つのエージェントが定義されています。
           あなたはプロジェクトオーナーとして、このチームに指示を出す立場です。
         </p>
 
@@ -98,7 +98,7 @@ export default function IntermediateStep2Page() {
               <ul className="mt-1 space-y-1 text-sm text-red-700">
                 <li>- 秘密情報がコードに直書きされていないか</li>
                 <li>- エラー処理が適切か（異常系を無視していないか）</li>
-                <li>- 要求定義書との整合性が取れているか</li>
+                <li>- 要求定義書・要件定義書との整合性が取れているか</li>
                 <li>- テストでカバーできていないケースがないか</li>
               </ul>
             </div>
@@ -109,6 +109,78 @@ export default function IntermediateStep2Page() {
           監査役（Sentinel）は必ずチームに入れてください。
           実装者だけのチームは「自分の答案を自分で採点する」のと同じです。
           第三者チェックがあるからこそ、品質が担保されます。
+        </Callout>
+
+        {/* チーム構成の妥当性を考える */}
+        <h2 className="text-xl font-bold text-slate-900">
+          チーム構成の妥当性を考える
+        </h2>
+        <p className="text-slate-600 leading-relaxed">
+          組織をつくったら、「この組織で要求定義書の内容を満たせるか？」を考えましょう。
+          要求定義書のMUST要件に対して、各エージェントが対応できるか確認します。
+        </p>
+
+        <div className="rounded-lg border border-slate-200 bg-white p-5">
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-600">
+                ?
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  配信リスト管理のCRUDは誰が作る？
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  → Artisan がバックエンドのAPI + フロントエンドのUIを実装
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-600">
+                ?
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  メールアドレスのバリデーションは誰がチェックする？
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  → Artisan が実装、Radar がテスト、Sentinel が漏れを監査
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-600">
+                ?
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  メール配信にはフロントエンドも必要では？
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  → Artisan はフロントエンド・バックエンド両方に対応可能
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-600">
+                ?
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  足りない役割がある場合は？
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  → agent-orchestrator には他にもエージェントがいます。必要に応じて追加できます
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Callout type="tip">
+          要求定義書のMUST要件を1つずつ見ていき、「これは誰がやるか？」を確認するのが
+          チーム構成の妥当性チェックの基本です。
+          全てのMUST要件に担当者がいれば、チーム構成はOKです。
         </Callout>
 
         {/* 品質ゲート */}
@@ -147,7 +219,9 @@ export default function IntermediateStep2Page() {
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
                   実装者とは別のエージェントが、セキュリティ・設計整合性・
-                  エッジケースをチェックする。指摘があれば修正する。
+                  エッジケースをチェックする。
+                  監査時は要求定義書（docs/requirements.md）と要件定義書（docs/specifications.md）をベースに整合性を確認する。
+                  指摘があれば修正する。
                 </p>
               </div>
             </div>
@@ -207,10 +281,27 @@ export default function IntermediateStep2Page() {
               </span>
               <div>
                 <h3 className="font-semibold text-slate-900">
+                  チーム構成の妥当性をチェックする
+                </h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  要求定義書のMUST要件を1つずつ確認し、各エージェントが対応できるか検証します。
+                  足りない役割があれば追加を検討しましょう。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 p-4">
+            <div className="flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-600">
+                4
+              </span>
+              <div>
+                <h3 className="font-semibold text-slate-900">
                   CLAUDE.md に品質ゲートのルールを追記する
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  「テスト2回実行」「外部監査必須」のルールを CLAUDE.md に書き込むことで、
+                  「テスト2回実行」「外部監査必須（要求定義・要件定義ベース）」のルールを CLAUDE.md に書き込むことで、
                   AIチーム全体がこのルールに従うようになります。
                 </p>
               </div>
@@ -232,6 +323,7 @@ export default function IntermediateStep2Page() {
 また、以下のルールを CLAUDE.md に追記してください:
 - テストは最低2回実行して、両方パスすることを確認する
 - 実装完了後、Sentinel（外部監査）を必ず通す
+- 監査時は docs/requirements.md と docs/specifications.md をベースに整合性を確認する
 - テスト2回パス + 外部監査パスの両方を満たさないと「完了」にしない`}
           language="text"
           filename="Claude Code への指示例"

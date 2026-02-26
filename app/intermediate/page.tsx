@@ -23,7 +23,7 @@ const flow = [
     step: "1",
     title: "要求定義をつくる",
     description:
-      "AIと相談しながら「何を作るか」をLuna標準フォーマットで文書化する",
+      "外部AI（GPT/Gemini）と相談しながら要求定義書と要件定義書を作成する",
     color: "bg-amber-50 border-amber-200",
     textColor: "text-amber-800",
   },
@@ -39,7 +39,7 @@ const flow = [
     step: "3",
     title: "Claude Codeに渡す",
     description:
-      "要求定義書をClaude Codeに渡して開発をスタート。コードはAIが書く",
+      "要求定義書をClaude Codeにコピペして開発をスタート",
     color: "bg-purple-50 border-purple-200",
     textColor: "text-purple-800",
   },
@@ -55,7 +55,7 @@ const flow = [
     step: "5",
     title: "テスト+監査で品質を担保",
     description:
-      "テスト2回実行 + 外部監査で品質を確認。パスしなければ修正→再実行",
+      "テスト2回実行 + 要求定義・要件定義ベースの外部監査で品質確認",
     color: "bg-red-50 border-red-200",
     textColor: "text-red-800",
   },
@@ -66,7 +66,7 @@ const goals = [
     grade: "A",
     title: "AIと協力して要求定義を作れる",
     description:
-      "「何を作るか」を言語化し、AIに伝わる要求定義書をLuna標準フォーマットで作成できる",
+      "「何を作るか」を言語化し、AIに伝わる要求定義書と要件定義書を作成できる",
   },
   {
     grade: "B",

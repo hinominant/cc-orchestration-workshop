@@ -41,8 +41,8 @@ export default function IntermediateStep4Page() {
               <div>
                 <h3 className="font-semibold text-blue-800">質問に答える</h3>
                 <p className="mt-1 text-sm text-blue-700">
-                  Claude Code から「Slack の通知フォーマットはどうしますか？」
-                  「エラー時のリトライ回数は何回にしますか？」といった質問が来ます。
+                  Claude Code から「メールテンプレートのフォーマットはどうしますか？」
+                  「配信失敗時のエラーハンドリングはどうしますか？」といった質問が来ます。
                   要求定義書を見ながら答えてください。
                 </p>
               </div>
@@ -98,7 +98,7 @@ export default function IntermediateStep4Page() {
                   「○○の仕様はどうしますか？」
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
-                  → 要求定義書（docs/requirements.md）を見て答える。
+                  → 要求定義書（docs/requirements.md）と要件定義書（docs/specifications.md）を見て答える。
                   書いてあればその通り伝え、書いてなければ「おまかせで」と答えて OK。
                 </p>
               </div>
@@ -158,7 +158,7 @@ export default function IntermediateStep4Page() {
             <p className="mt-1 text-xs text-slate-500">→ 完了した作業と残りの作業を教えてくれます</p>
           </div>
           <div className="rounded-md bg-slate-50 px-4 py-3">
-            <p className="text-sm font-mono text-slate-700">docs/requirements.md を再度確認して、方針を修正してください</p>
+            <p className="text-sm font-mono text-slate-700">docs/requirements.md と docs/specifications.md を再度確認して、方針を修正してください</p>
             <p className="mt-1 text-xs text-slate-500">→ 方向がおかしいと感じたときに使います</p>
           </div>
           <div className="rounded-md bg-slate-50 px-4 py-3">
@@ -186,8 +186,8 @@ export default function IntermediateStep4Page() {
           <div className="rounded-lg border border-slate-200 p-4">
             <h3 className="font-semibold text-slate-900">方向がおかしい</h3>
             <p className="mt-1 text-sm text-slate-600">
-              → 「docs/requirements.md を再度確認して、方針を修正してください」と伝えましょう。
-              要求定義書が正しい方向への道しるべになります。
+              → 「docs/requirements.md と docs/specifications.md を再度確認して、方針を修正してください」と伝えましょう。
+              要求定義書と要件定義書が正しい方向への道しるべになります。
             </p>
           </div>
 

@@ -112,6 +112,20 @@ export default function IntermediateStep8Page() {
               </p>
             </div>
           </div>
+
+          <div className="rounded-lg border border-slate-200 p-5">
+            <h3 className="font-semibold text-slate-900">
+              Q: 要件定義書がなかったらどうなる？
+            </h3>
+            <div className="mt-3 rounded-md bg-slate-50 p-3">
+              <p className="text-sm font-medium text-slate-500">回答のポイント:</p>
+              <p className="mt-1 text-sm text-slate-700">
+                要求定義書だけでは「何を作るか」はわかるが「どう動くべきか」の基準がない。
+                監査時にも「正しく実装されているか」を判断する基準がなくなる。
+                要件定義書があるからこそ、実装と仕様のズレを検出できる。
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 評価ルーブリック */}
@@ -224,7 +238,7 @@ export default function IntermediateStep8Page() {
             {
               step: "STEP 6-7",
               title: "仕上げ",
-              description: "セキュリティと運用の基本",
+              description: "セキュリティ・ドキュメント整備・Vercelデプロイ",
               color: "bg-green-50",
               textColor: "text-green-800",
               subColor: "text-green-600",
@@ -259,8 +273,7 @@ export default function IntermediateStep8Page() {
                   今回のサービスを発展させる
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  機能追加、別のWebhookプロバイダー対応、
-                  データベース連携など、実際のプロダクトに近づけてみましょう。
+                  機能追加、開封トラッキング対応、データベース連携など、実際のプロダクトに近づけてみましょう。
                 </p>
               </div>
             </div>
