@@ -148,7 +148,7 @@ claude`}
         </p>
         <CodeBlock
           code={`agent-orchestratorを導入してください。
-https://github.com/hinominant/agent-orchestrator の README を読んで、
+https://github.com/Luna-company/agent-orchestrator-starter の README を読んで、
 このプロジェクトにエージェントチームをセットアップしてください。`}
           language="text"
           filename="Claude Code への指示"
