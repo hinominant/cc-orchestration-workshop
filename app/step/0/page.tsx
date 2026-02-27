@@ -217,6 +217,45 @@ npm install`}
           </div>
         </div>
 
+        {/* 安全設定について */}
+        <h2 className="text-xl font-bold text-slate-900">
+          安全設定（自動で適用されます）
+        </h2>
+        <p className="text-slate-600 leading-relaxed">
+          スターターリポジトリには、Claude Code の安全設定があらかじめ含まれています。
+          以下の設定が自動で適用されるため、安心して作業を始められます。
+        </p>
+
+        <div className="space-y-4">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+            <h3 className="font-semibold text-red-800">サンドボックス（OS レベルの隔離）</h3>
+            <p className="mt-2 text-sm text-red-700 leading-relaxed">
+              Claude Code の動作環境を「隔離された箱」の中に閉じ込めます。
+              ファイルシステムやネットワークへのアクセスが OS レベルで制限されるため、
+              万が一の暴走でもパソコン全体に被害が及びません。
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h3 className="font-semibold text-amber-800">3 層パーミッション設定（DCP 準拠）</h3>
+            <p className="mt-2 text-sm text-amber-700 leading-relaxed">
+              Claude Code の操作が危険度に応じて 3 段階に分類されています。
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-amber-700">
+              <li>- <strong>自動許可</strong>: ファイルの読み取り、テスト実行など安全な操作</li>
+              <li>- <strong>確認して実行</strong>: ファイル変更、削除系コマンドなど（何をするか表示されます）</li>
+              <li>- <strong>絶対禁止</strong>: 管理者権限の実行、秘密情報へのアクセスなど</li>
+            </ul>
+          </div>
+        </div>
+
+        <Callout type="warning">
+          Claude Code は必ずプロジェクトフォルダの中で起動してください。
+          ホームディレクトリ（ ~ ）で起動すると、書類・SSH鍵・クラウドの認証情報など
+          すべてのファイルにアクセスできる状態になり、事故のリスクが高まります。
+          今回は cc-workshop-starter フォルダの中で起動するので問題ありません。
+        </Callout>
+
         <Callout type="tip">
           Forkしたリポジトリには、CLAUDE.md や .claude/agents/ といったファイルが入っています。
           これらがAIチームの「設計図」です。次のSTEPで詳しく見ていきます。

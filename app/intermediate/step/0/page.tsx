@@ -39,6 +39,13 @@ const checks = [
     expected:
       ".claude/agents/ に sherpa.md, artisan.md, radar.md, sentinel.md がある",
   },
+  {
+    id: "safety",
+    label: "安全設定（settings.json + sandbox）が有効になっている",
+    command: "",
+    expected:
+      ".claude/settings.json に deny/ask/allow リストと sandbox 設定がある。/permissions で確認可能",
+  },
 ];
 
 export default function IntermediateStep0Page() {
@@ -125,6 +132,13 @@ export default function IntermediateStep0Page() {
           language="bash"
         />
 
+        <Callout type="warning">
+          Claude Code はホームディレクトリ（ ~ ）で起動しないでください。
+          ホームディレクトリで起動すると、書類・SSH鍵（.ssh）・クラウドの認証情報（.aws）など
+          すべてのファイルにアクセスできる状態になります。
+          上のコマンドのように専用フォルダを作り、その中で起動する習慣をつけましょう。
+        </Callout>
+
         {/* Step 3: Claude Code 起動 */}
         <h3 className="text-lg font-semibold text-slate-800">
           3. Claude Code を起動する
@@ -182,6 +196,47 @@ https://github.com/Luna-company/agent-orchestrator-starter の README を読ん�
           これらのファイルが「AIチームのメンバー定義」です。
           それぞれのエージェントがどんな役割を持つかは、STEP 2 で詳しく学びます。
         </p>
+
+        {/* Step 6: 安全設定の確認 */}
+        <h3 className="text-lg font-semibold text-slate-800">
+          6. 安全設定を確認する
+        </h3>
+        <p className="text-slate-600 leading-relaxed">
+          agent-orchestrator を導入すると、安全設定ファイル（.claude/settings.json）も自動的にセットアップされます。
+          この設定により、Claude Code の操作が危険度に応じて制限されます。
+        </p>
+
+        <div className="space-y-4">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+            <h3 className="font-semibold text-red-800">サンドボックス（OS レベルの隔離）</h3>
+            <p className="mt-2 text-sm text-red-700 leading-relaxed">
+              Claude Code の動作環境を「隔離された箱」に閉じ込めます。
+              ファイルシステムやネットワークへのアクセスが OS レベルで制限され、
+              万が一の暴走でもパソコン全体に被害が及びません。
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h3 className="font-semibold text-amber-800">3 層パーミッション設定（DCP 準拠）</h3>
+            <ul className="mt-2 space-y-1 text-sm text-amber-700">
+              <li>- <strong>自動許可（allow）</strong>: ファイル読み取り、テスト実行</li>
+              <li>- <strong>確認して実行（ask）</strong>: ファイル変更、削除コマンド（何をするか表示されます）</li>
+              <li>- <strong>絶対禁止（deny）</strong>: 管理者権限（sudo）、秘密情報アクセス、シェル設定変更</li>
+            </ul>
+          </div>
+        </div>
+
+        <p className="text-slate-600 leading-relaxed">
+          設定が正しく適用されているか、Claude Code 内で以下のコマンドを実行して確認できます。
+        </p>
+        <CodeBlock code="/permissions" language="text" filename="Claude Code 内で実行" />
+
+        <Callout type="info">
+          削除コマンド（rm など）は「絶対禁止」ではなく「確認して実行」に設定されています。
+          開発中に不要なファイルを削除する場面はあるため、完全にブロックするのではなく
+          「何を削除しようとしているか」を毎回確認する設計です。
+          管理者権限（sudo / su）や秘密情報のアクセスは完全にブロックされます。
+        </Callout>
 
         {/* 環境チェックリスト */}
         <h2 className="text-xl font-bold text-slate-900">環境チェックリスト</h2>
