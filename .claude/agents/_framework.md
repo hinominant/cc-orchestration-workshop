@@ -28,8 +28,6 @@ User Request
 4. **Fail fast, recover smart** - ガードレール L1-L4 で早期検出、可能なら自動回復
 5. **Context is precious** - `.agents/PROJECT.md` + `.agents/LUNA_CONTEXT.md` でエージェント間の知識を共有
 6. **CEO-first for business** - ビジネス判断は技術実装の前にCEOが方針を出す
-7. **Critical Thinking** - 指示の鵜呑み禁止。矛盾があれば指摘。根拠なき代替案は禁止
-8. **Spec-First** - 仕様→テスト→実装の順序を守る（適用可能なタスクのみ）
 
 ---
 
@@ -54,29 +52,10 @@ User Request
 | 機能開発(中) | Sherpa → Forge → Builder → Radar |
 | 機能開発(大) | Sherpa → Rally(Builder + Artisan + Radar) |
 | リファクタリング | Zen → Radar |
-| セキュリティ監査 | Sentinel → Probe → Builder → Radar |
+| セキュリティ監査 | Sentinel → Builder → Radar |
 | PR準備 | Guardian → Judge |
 | ビジネス/戦略 | CEO → Sherpa → Forge/Builder → Radar |
 | データ分析 | Analyst → CEO（意思決定要時）→ Nexus（施策化） |
-| データパイプライン修正 | Scout → Analyst → Builder → Radar |
-| スペック準拠監査 | Auditor → Builder → Radar |
-| 大規模修正（監査付き） | Sherpa → Builder → Auditor → Radar |
-
----
-
-## Model Routing (Bloom Taxonomy)
-
-タスク複雑度を6段階で判定し、最適モデルを自動選択。
-
-| Level | Description | Model |
-|-------|-------------|-------|
-| L1-L2 | 情報取得・理解 | Haiku |
-| L3-L4 | 実装・分析 | Sonnet |
-| L5-L6 | 評価・設計 | Opus |
-
-- 複数レベル一致時は上位を採用
-- 環境変数 `BLOOM_MODEL_OVERRIDE` で強制指定可能
-- 詳細: `_common/MODEL_ROUTING.md`
 
 ---
 
@@ -96,18 +75,6 @@ L1 → 改善なし → L2 → 自動回復成功 → CONTINUE
                     → 回復失敗 → L3 → 解決 → CONTINUE
                                     → 重大 → L4 → ROLLBACK + STOP
 ```
-
-### Time-based Escalation
-
-エージェント無応答時の段階的対処:
-
-| Phase | Trigger | Action |
-|-------|---------|--------|
-| NUDGE | 2分無応答 | リマインド |
-| RETRY | 4分無応答 | タスク再送（最大2回） |
-| RESET | 6分無応答 | 再割当 or 人間エスカレート |
-
-- 詳細: `_common/ESCALATION.md`
 
 ---
 
@@ -253,19 +220,6 @@ _STEP_COMPLETE:
 - Next action: CONTINUE | VERIFY | DONE
 ```
 
-### Token Budget
-
-エージェント間通信のトークン予算管理:
-
-| Scenario | Budget |
-|----------|--------|
-| NEXUS_HANDOFF | 3000 tokens |
-| Rally branch | 1000 tokens |
-| Error report | 500 tokens |
-
-- 予算超過時は段階的圧縮（空行除去→URL短縮→重複除去→トランケート）
-- 詳細: `_common/SLIM_CONTEXT.md`
-
 ---
 
 ## Coordinator Protocols
@@ -297,28 +251,6 @@ _STEP_COMPLETE:
 - 同じ手順を2回以上実行したらスラッシュコマンド化を提案
 - コーディネーターはコードを書かない。計画 → 委任 → レビューが仕事
 
-### Critical Thinking
-
-- 指示の鵜呑み禁止。矛盾や前提の誤りがあれば指摘する
-- 代替案は根拠付きで提案。根拠なき提案は禁止
-- 前提が崩れたら早期報告。壊れた前提の上に積み上げない
-- 過剰批判で手が止まるのは禁止。実行速度とのバランスを保つ
-
-### Context Recovery
-
-コンテキスト圧縮・セッション再開時は、作業開始前に以下を順に実行:
-
-1. メモリファイル読み込み
-2. プロジェクトの CLAUDE.md 確認
-3. `git log --oneline -10` + `git status` で作業状態把握
-4. 圧縮サマリーがあればそれも読む
-5. 上記完了まで実装作業に入らない
-
-### Test Policy
-
-- SKIP = FAIL: テストの SKIP は「未完了」。SKIP があるまま「全テスト通過」と報告しない
-- 実装完了後は必ずテストを実行する
-
 ### Coordinator Role
 
 ```
@@ -330,26 +262,23 @@ _STEP_COMPLETE:
 - 全成果物をレビューしてからユーザーに報告する
 - 実装完了後はテスト + パイプライン実行 + 出力目視確認まで行う
 
-### Verification
+---
 
-- 実装完了後はテスト + パイプライン実行 + 出力目視確認まで行う
-- テスト未実行のまま「完了」と報告しない
+## Context Hygiene
 
-### Tool Risk (Hooks)
+コンテキスト管理は `_common/CONTEXT_HYGIENE.md` に従う。
 
-PreToolUse Hook でツール実行前にリスク分類を表示:
-- HIGH: 破壊的操作 → 確認ダイアログ
-- MEDIUM: 外部影響 → 説明表示
-- LOW: 読み取り → サイレント通過
-- `install.sh --with-hooks` で設定
-- 詳細: `_common/TOOL_RISK.md`
+- 50%到達で手動compact推奨、80%で自動compact
+- topic変更時は `/clear`、迷走時は `/rewind`
+- 長チェーン時はNexusが中間compact管理
 
-### Skill Discovery
+## ALICE Integration
 
-繰り返しパターンの自動検出 → スラッシュコマンド化提案:
-- 3回以上の出現 → 候補として提案
-- WORKFLOW_AUTOMATION と補完関係（セッション内 vs セッション横断）
-- 詳細: `_common/SKILL_DISCOVERY.md`
+ALICE（ARIS/LROS/NOVA/Secretary）統合については `_common/ALICE_INTEGRATION.md` を参照。
+
+- CEO: ARIS 4-mind統合（Founder/Vision/Execution/Audit）
+- Analyst: LROS SSoT参照
+- Radar: QA Health Score + Diff-Aware Mode
 
 ---
 
