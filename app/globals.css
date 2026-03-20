@@ -12,6 +12,9 @@
   --intermediate: #d97706;
   --intermediate-dark: #b45309;
   --intermediate-light: #fef3c7;
+  --engineer: #059669;
+  --engineer-dark: #047857;
+  --engineer-light: #d1fae5;
 }
 
 @theme inline {
@@ -26,6 +29,9 @@
   --color-intermediate: var(--intermediate);
   --color-intermediate-dark: var(--intermediate-dark);
   --color-intermediate-light: var(--intermediate-light);
+  --color-engineer: var(--engineer);
+  --color-engineer-dark: var(--engineer-dark);
+  --color-engineer-light: var(--engineer-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

@@ -63,9 +63,34 @@ export const intermediateCourse: Course = {
   ],
 };
 
-export const allCourses = [beginnerCourse, intermediateCourse] as const;
+export const engineerCourse: Course = {
+  id: "engineer",
+  label: "エンジニア編",
+  subtitle: "Project 3 - エンジニアのためのClaude Code実践",
+  basePath: "/engineer/step",
+  topPath: "/engineer",
+  duration: "約4時間",
+  color: "bg-engineer",
+  colorDark: "bg-engineer-dark",
+  colorLight: "bg-engineer-light",
+  steps: [
+    { id: 0, title: "Claude Codeとは", duration: "15分", description: "Claude Codeの全体像とアーキテクチャを理解する" },
+    { id: 1, title: "基本操作とCLAUDE.md", duration: "20分", description: "CLI操作・スラッシュコマンド・CLAUDE.mdの設計思想" },
+    { id: 2, title: "パーミッションとセキュリティ", duration: "25分", description: "サンドボックス・権限設定・Hooks・組織ポリシー" },
+    { id: 3, title: "エージェント定義の設計", duration: "30分", description: "エージェントファイルの書き方と役割分担の設計" },
+    { id: 4, title: "オーケストレーション構成", duration: "30分", description: "Hub-spoke・並列実行・ファイルオーナーシップ" },
+    { id: 5, title: "実践: バックエンドサービス構築", duration: "60分", description: "エージェントチームでTypeScriptバックエンドを構築" },
+    { id: 6, title: "テスト・品質管理", duration: "30分", description: "テスト自動化・カバレッジ・外部監査の運用" },
+    { id: 7, title: "チーム運用とスケーリング", duration: "30分", description: "実プロジェクトへの導入パターンとベストプラクティス" },
+  ],
+};
+
+export const allCourses = [beginnerCourse, intermediateCourse, engineerCourse] as const;
 
 export function getCourseByPath(pathname: string): Course | undefined {
+  if (pathname.startsWith("/engineer")) {
+    return engineerCourse;
+  }
   if (pathname.startsWith("/intermediate")) {
     return intermediateCourse;
   }
