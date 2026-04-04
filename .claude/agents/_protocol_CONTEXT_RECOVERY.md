@@ -7,12 +7,13 @@
 
 ## Recovery Steps（順序厳守）
 
-1. **メモリ読み込み** - プロジェクトのメモリファイル（MEMORY.md）を読む
-2. **学習レビュー** - `.agents/lessons.md` を読み、過去の失敗・成功パターンを確認する
-3. **CLAUDE.md 確認** - 現在のプロジェクトの CLAUDE.md を読む
-4. **作業状態の把握** - `git log --oneline -10` + `git status` で直近の変更を確認
-5. **圧縮サマリー確認** - コンテキスト圧縮のサマリーがあればそれも読む
-6. **共有知識確認** - `.agents/PROJECT.md` の Activity Log で直近の作業履歴を把握
+1. **RESUME_CONTEXT.md 読み込み** - `.claude/RESUME_CONTEXT.md` が存在する場合、最初に読む（stop-hook が自動生成）
+2. **メモリ読み込み** - プロジェクトのメモリファイル（MEMORY.md）を読む
+3. **学習レビュー** - `.agents/lessons.md` を読み、過去の失敗・成功パターンを確認する
+4. **CLAUDE.md 確認** - 現在のプロジェクトの CLAUDE.md を読む
+5. **作業状態の把握** - `git log --oneline -10` + `git status` で直近の変更を確認
+6. **圧縮サマリー確認** - コンテキスト圧縮のサマリーがあればそれも読む
+7. **共有知識確認** - `.agents/PROJECT.md` の Activity Log で直近の作業履歴を把握
 
 ## Rules
 

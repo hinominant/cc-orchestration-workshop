@@ -1,19 +1,58 @@
 # Model Routing Protocol
 
-Bloom Taxonomy に基づくタスク複雑度の自動判定と最適モデル選択。
+Bloom Taxonomy に基づくタスク複雑度の自動判定と最適モデル・エンジン選択。
+
+> **3エンジン体制:** Claude Code / Codex / Gemini の使い分けは `ENGINE_ROUTING.md` を参照。
+> このファイルは「どのClaudeモデルを使うか」と「どのエンジンを使うか」の両方を定義する。
 
 ---
 
 ## Bloom Taxonomy Levels
 
-| Level | Name | Description | Default Model |
-|-------|------|-------------|---------------|
-| L1 | REMEMBER | 単純な情報取得・一覧表示 | claude-haiku-4-5-20251001 |
-| L2 | UNDERSTAND | 内容の理解・要約・翻訳 | claude-haiku-4-5-20251001 |
-| L3 | APPLY | 既知パターンの適用・修正 | claude-sonnet-4-5-20250929 |
-| L4 | ANALYZE | 構造分析・根本原因特定 | claude-sonnet-4-5-20250929 |
-| L5 | EVALUATE | 判断・トレードオフ比較 | claude-sonnet-4-5-20250929 |
-| L6 | CREATE | 新規設計・アーキテクチャ | claude-opus-4-6-20250918 |
+| Level | Name | Description | Default Model | Primary Engine |
+|-------|------|-------------|---------------|----------------|
+| L1 | REMEMBER | 単純な情報取得・一覧表示 | claude-haiku-4-5-20251001 | Codex / Gemini |
+| L2 | UNDERSTAND | 内容の理解・要約・翻訳 | claude-haiku-4-5-20251001 | Gemini |
+| L3 | APPLY | 既知パターンの適用・修正 | claude-sonnet-4-6 | Codex |
+| L4 | ANALYZE | 構造分析・根本原因特定 | claude-sonnet-4-6 | Codex / Claude Code |
+| L5 | EVALUATE | 判断・トレードオフ比較 | claude-sonnet-4-6 | Claude Code |
+| L6 | CREATE | 新規設計・アーキテクチャ | claude-opus-4-6 | Claude Code |
+
+**Engine 選定の優先順位:** タスク種別 → Bloom Level → フォールバック（weekly limit）
+詳細は `ENGINE_ROUTING.md` を参照。
+
+---
+
+## 3層ルーティング
+
+### Agent層（エージェント選択）
+frontmatter の `model` フィールドで指定。Tier 1 エージェントの割り当て:
+
+| Agent | Model | Rationale |
+|-------|-------|-----------|
+| CEO | opus | 意思決定（Create/Evaluate） |
+| Nexus | sonnet | オーケストレーション（Analyze/Apply） |
+| Rally | sonnet | 並列管理（Apply） |
+| Analyst | sonnet | データ分析（Analyze） |
+| Auditor | sonnet | 監査（Evaluate — コスト効率考慮でsonnet） |
+| Radar | sonnet | テスト（Apply） |
+| Builder | sonnet | 実装（Apply） |
+| Sherpa | haiku | 分解（Remember/Understand） |
+
+### Skill層（スキル実行）
+Skills は原則 `haiku` で実行（定型手順のため）:
+
+| Skill | Model | Rationale |
+|-------|-------|-----------|
+| data-retrieval | haiku | 定型データ取得手順 |
+| spec-compliance | haiku | チェックリスト照合 |
+| test-coverage | haiku | カバレッジ分析 |
+| git-pr-prep | haiku | PR準備手順 |
+| diff-analysis | haiku | diff解析 |
+| aris-feedback | haiku | パターン記録 |
+
+### Command層（コマンド実行）
+Commands は呼び出し元セッションのモデルを継承。
 
 ---
 
@@ -72,7 +111,17 @@ TASK_ROUTING:
 
 | Scenario | Strategy |
 |----------|----------|
-| 大量の情報取得タスク | Haiku で並列実行 |
-| 分析 + 実装の混合チェーン | 分析=Sonnet、実装=Sonnet |
-| アーキテクチャ判断 | Opus（ケチらない） |
-| テスト実行・lint | Haiku で十分 |
+| 大量の情報取得タスク | Codex o4-mini / Gemini で実行 |
+| アルゴリズム実装・テスト生成 | Codex o4-mini（仕様明確なら） |
+| バグ修正ループ（テストあり・再現明確） | Codex o4-mini → 3ループ超 → o3 → 未解決 → Claude Code |
+| 分析 + 実装の混合チェーン | 分析=Claude Code Sonnet、実装=Codex |
+| ドキュメント生成・コードベース調査 | Gemini |
+| アーキテクチャ判断・設計 | Claude Code Opus（ケチらない） |
+| Claude Code weekly limit 到達時 | Codex → Gemini でフォールバック |
+
+### コスト最適化ルール
+
+1. **デフォルトはsonnet** — 明確な理由がない限りsonnet
+2. **opusは意思決定のみ** — CEO、重大なアーキテクチャ判断
+3. **haikuは定型作業** — 分解、検索、単純変換、スキル実行
+4. **エスカレーション** — haiku/sonnetで対応不能な場合のみopusに昇格
