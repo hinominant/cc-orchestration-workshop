@@ -6,17 +6,21 @@
  *
  * 4-Hook体制の PreToolUse フック。
  * - Safety Gate パターン検知 → 自動ブロック
- * - HIGH/MEDIUM リスク → 確認ダイアログ表示
- * - LOW リスク → サイレント通過
- * - additionalContext でファイルオーナーシップ情報を注入
+ * - HIGH/MEDIUM リスク → 文面を Claude に渡す (hookSpecificOutput.additionalContext・止めない)
+ * - LOW リスク → 何も出さない (通常の確認の流れに任せる)
+ *
+ * ★2026-11-05 (ARIS-1982): 以前は HIGH/MEDIUM で `decision: "ask_user"` を出していた。Claude Code に
+ *   無い値なので毎回「Hook JSON output validation failed」になり、確認ダイアログは一度も出ず、文面も
+ *   届いていなかった (実際の振る舞いは「何もしない」)。文面が届く形にした。本物の確認 (permissionDecision
+ *   "ask") にはしていない: 無人のセッションが止まるため。普通の Edit/Write は毎回鳴る雑音になるので LOW。
  *
  * Install: ~/.claude/hooks/tool-risk.js
  * Settings: ~/.claude/settings.json の hooks.PreToolUse に登録
  */
 
 // === DATA PROTECTION REMINDER ===
-// additionalContext として全ツール呼び出しに注入する。
-// コンテキスト圧縮後も毎回フレッシュに再注入されるため「忘れ」が起きない。
+// MEDIUM/HIGH の文面に添える。(以前は全ツール呼び出しに付ける設計だったが、出力の形が Claude Code に
+// 合わず一度も届いていなかった。毎回の呼び出しに付けると雑音になるので、警告のときだけにした)
 const DATA_PROTECTION_REMINDER =
   '[DATA GUARD] ⚠️ 入力禁止: 採用候補者データ・本番DB接続文字列・未公開財務情報・顧客個人情報。' +
   'データ作業前は /data-guard を実行。詳細: _common/DATA_PROTECTION.md';
@@ -380,13 +384,8 @@ function classifyRisk(toolName, toolInput) {
       }
     }
 
-    return {
-      level: 'MEDIUM',
-      reason: 'ファイル変更: ' + filePath,
-      additionalContext: filePath
-        ? `Editing ${filePath}. Ensure file ownership rules are respected per _common/PARALLEL.md.`
-        : undefined,
-    };
+    // 普通の Write/Edit は LOW (毎回の文面は雑音になり、本当の警告が埋もれる・ARIS-1982)
+    return { level: 'LOW', reason: '' };
   }
 
   // Default: LOW
@@ -412,25 +411,16 @@ process.stdin.on('end', () => {
         reason: reason,
       }));
     } else if (level === 'LOW') {
-      // Silent pass-through + DATA PROTECTION reminder (survives context compression)
-      const result = {
-        decision: 'approve',
-        additionalContext: additionalContext
-          ? additionalContext + '\n' + DATA_PROTECTION_REMINDER
-          : DATA_PROTECTION_REMINDER,
-      };
-      process.stdout.write(JSON.stringify(result));
+      // 何も出さない: decision "approve" は permissionDecision "allow" と読まれ、確認を飛ばしうる (ARIS-1982)。
+      //   何も出さなければ Claude Code の通常の確認の流れに乗る
     } else {
-      // MEDIUM / HIGH: ask user + DATA PROTECTION reminder
+      // MEDIUM / HIGH: 文面を Claude に渡す (止めない) + DATA PROTECTION reminder
       const indicator = level === 'HIGH' ? '🔴' : '🟡';
-      const result = {
-        decision: 'ask_user',
-        reason: indicator + ' ' + level + ' RISK: ' + reason,
-        additionalContext: additionalContext
-          ? additionalContext + '\n' + DATA_PROTECTION_REMINDER
-          : DATA_PROTECTION_REMINDER,
-      };
-      process.stdout.write(JSON.stringify(result));
+      const msg = '[tool-risk] ' + indicator + ' ' + level + ' RISK: ' + reason +
+        (additionalContext ? '\n' + additionalContext : '') + '\n' + DATA_PROTECTION_REMINDER;
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: { hookEventName: 'PreToolUse', additionalContext: msg },
+      }));
     }
   } catch (_e) {
     // === Fail-Open Design Rationale (X-1 / S-1) ===
@@ -448,6 +438,6 @@ process.stdin.on('end', () => {
     // - Hook 層（Layer 3）が一時的に無効化されるリスクを受容する
     // - Layer 1 + Layer 2 が残存するため、rm -rf /, sudo, curl 等は
     //   Permissions の deny で引き続きブロックされる
-    process.stdout.write(JSON.stringify({ decision: 'approve' }));
+    // 何も出さない (= 通常の確認の流れ)。decision "approve" は allow と読まれうる
   }
 });
